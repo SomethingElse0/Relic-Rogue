@@ -31,7 +31,7 @@ public class PlayerMovement : MonoBehaviour
         actions.FindActionMap("Movement").FindAction("interact").performed += OnInteract;
         movement = actions.FindActionMap("Movement").FindAction("movement");
         actions.FindActionMap("Movement").FindAction("movement").performed += OnMove;
-        attack = actions.FindActionMap("Movement").FindAction("movement");
+        attack = actions.FindActionMap("Movement").FindAction("attack");
         actions.FindActionMap("Movement").FindAction("attack").performed += OnAttack;
         rb = GetComponent<Rigidbody>();
     }
@@ -55,7 +55,7 @@ public class PlayerMovement : MonoBehaviour
         }
         else
         {
-            rb.velocity = new Vector3(movement.ReadValue<Vector2>().x, movement.ReadValue<Vector2>().y, 0)*playerSpeed;
+            rb.velocity = new Vector3(movement.ReadValue<Vector2>().x * playerSpeed, movement.ReadValue<Vector2>().y * playerSpeed, 0);
         }
         if (velocity.magnitude != 0 && velocity / velocity.magnitude != savedVelocity) savedVelocity = velocity / velocity.magnitude;
         
@@ -79,8 +79,9 @@ public class PlayerMovement : MonoBehaviour
     }
     void OnAttack(InputAction.CallbackContext context)
     {
-        if (lastDashTime + 0.1f > Time.fixedTime) weapon.SendMessage("dashAttack");
-        else weapon.SendMessage("attack");
+        /*if (lastDashTime + 0.1f > Time.fixedTime) weapon.SendMessage("dashAttack");
+        else weapon.SendMessage("attack");*/
+        print("hi");
     }
     void OnPause()
     {
