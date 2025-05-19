@@ -13,6 +13,7 @@ public class PlayerMovement : MonoBehaviour
     InputAction move;
     InputAction interact;
     GameObject weapon;
+    GameObject dashDestination;
     float playerSpeed = 5f;
     float dashCoolldown = 1.5f;
     float lastDashTime = -10;
@@ -25,15 +26,20 @@ public class PlayerMovement : MonoBehaviour
     
     void Start()
     {
+        dashDestination = transform.GetChild(0).gameObject;
         dash = actions.FindActionMap("Movement").FindAction("dash");
         actions.FindActionMap("Movement").FindAction("dash").performed += OnDash;
         interact = actions.FindActionMap("Movement").FindAction("interact");
         actions.FindActionMap("Movement").FindAction("interact").performed += OnInteract;
         movement = actions.FindActionMap("Movement").FindAction("movement");
-        actions.FindActionMap("Movement").FindAction("movement").performed += OnMove;
         attack = actions.FindActionMap("Movement").FindAction("attack");
         actions.FindActionMap("Movement").FindAction("attack").performed += OnAttack;
         rb = GetComponent<Rigidbody>();
+        
+    }
+    private void Awake()
+    {
+        
     }
     private void OnEnable() => actions.Enable();
     private void OnDisable() => actions.Disable();
@@ -48,21 +54,19 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (hp! > 0) playerSpeed = 0;
-        if (Time.fixedTime < lastDashTime + 0.2f)
-        {
-            rb.velocity = dashDirection;
-        }
+        if (hp < 0) playerSpeed = 0;
         else
         {
-            rb.velocity = new Vector3(movement.ReadValue<Vector2>().x * playerSpeed, movement.ReadValue<Vector2>().y * playerSpeed, 0);
+            Vector2 movementValue = playerSpeed * movement.ReadValue<Vector2>();
+            rb.velocity = new Vector3(movementValue.x, movementValue.y, 0);
+            Debug.Log("hi" + movement.ReadValue<Vector2>().x);
+
+            if (velocity.magnitude != 0 && velocity / velocity.magnitude != savedVelocity) savedVelocity = velocity / velocity.magnitude;
         }
-        if (velocity.magnitude != 0 && velocity / velocity.magnitude != savedVelocity) savedVelocity = velocity / velocity.magnitude;
-        
     }
     void OnInteract(InputAction.CallbackContext context)
     {
-        interactableObject.SendMessage("Interact");
+        if (interactableObject!=null)interactableObject.SendMessage("Interact");
     }
     void OnDash(InputAction.CallbackContext context)
     {
@@ -71,6 +75,11 @@ public class PlayerMovement : MonoBehaviour
             lastDashTime = Time.fixedTime;
             if (velocity.magnitude > 0) dashDirection = velocity * playerSpeed*3 / velocity.magnitude;
             else dashDirection = savedVelocity * playerSpeed*3;
+            dashDestination.GetComponent<Dash_Destination>().Dash();
+            OnDisable();
+            transform.position = dashDestination.transform.position;
+            OnEnable();
+            dashDestination.GetComponent<Dash_Destination>().PositionReset();
         }
     }
     void OnMove(InputAction.CallbackContext context)
@@ -85,6 +94,7 @@ public class PlayerMovement : MonoBehaviour
     }
     void OnPause()
     {
-
+        if (actions.enabled == true) OnDisable();
+        else OnEnable();
     }
 }

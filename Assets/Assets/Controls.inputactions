@@ -133,17 +133,6 @@
                 },
                 {
                     "name": "",
-                    "id": "d43ad3fe-544f-49d5-b422-f512f1aa9e8a",
-                    "path": "<Keyboard>/space",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "controller",
-                    "action": "dash",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "8149021e-6665-4b71-bf34-1dcd41c6a610",
                     "path": "<Mouse>/rightButton",
                     "interactions": "",
@@ -159,7 +148,7 @@
                     "path": "<Mouse>/leftButton",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": "Keyboard",
                     "action": "attack",
                     "isComposite": false,
                     "isPartOfComposite": false
