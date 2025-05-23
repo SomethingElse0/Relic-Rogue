@@ -45,7 +45,6 @@ public class GenerateScrap : MonoBehaviour
         else
         {
             colliders--;
-            transform.position = new Vector3(Random.Range(0, 100), Random.Range(0, 100), 0);
         }
     }
     public void RandomItem(int modifier, int counter)
