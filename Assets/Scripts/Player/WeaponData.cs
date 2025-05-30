@@ -11,4 +11,5 @@ public class WeaponData : ScriptableObject
     public int bulletBounces;
     public bool bulletsCollectable;
     public bool isMelee;
+    public Sprite gunSprite;
 }

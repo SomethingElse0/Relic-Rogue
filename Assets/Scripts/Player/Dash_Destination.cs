@@ -10,37 +10,41 @@ public class Dash_Destination : MonoBehaviour
     Rigidbody rb;
     float magnitude;
     Vector2 newNormalDirection, normalDirection;
-    Vector2 direction;
+    Vector3 direction;
     bool hitSomething = false;
     float playerSpeed = 2.5f;
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
         movement = GetComponentInParent<PlayerMovement>().actions.FindActionMap("Movement").FindAction("movement");
-        direction = movement.ReadValue<Vector2>();
+        
         normalDirection = new Vector2(1,0);
     }
     private void Update()
     {
-        if (direction.magnitude > 0) normalDirection = newNormalDirection = direction / direction.magnitude;
-        else newNormalDirection = new Vector2(0, 0);
-        transform.position = transform.parent.position+new Vector3(normalDirection.x, normalDirection.y)*magnitude;
-        print((transform.position - transform.parent.position));
-        if (hitSomething == false && magnitude < playerSpeed - 1) magnitude += 1;
+        //gets the 
+        direction = transform.parent.GetComponent<Rigidbody>().velocity;
+        if (direction.magnitude != 0) transform.position = transform.parent.position + new Vector3(direction.normalized.x * magnitude, direction.normalized.y * magnitude, 0);
+        
+        print("DIR" + direction);
+        print(transform.position - transform.parent.position);
+        if (hitSomething == false && magnitude +1< playerSpeed) magnitude ++;
         else if (hitSomething == false) magnitude = playerSpeed;
-        else magnitude -= 0.1f;
+        
     }
     public void Dash()
     {
-        if (direction.magnitude>0) transform.position = new Vector3(normalDirection.x, normalDirection.y, 0)*magnitude + transform.position;
-        print((transform.position - transform.parent.position));
+        /*if (direction.magnitude!>0) transform.position = new Vector3(normalDirection.x, normalDirection.y, 0)*magnitude + transform.position;
+        print((transform.position - transform.parent.position));*/
     }
-    
+    private void OnCollisionEnter(Collision collision)
+    {
+        
+        
+    }
     private void OnCollisionStay(Collision collision)
     {
         hitSomething = true;
-        Vector3 localColisionDistance = collision.GetContact(0).point-transform.parent.position;
-        transform.position = transform.parent.position+((transform.position - transform.parent.position) * localColisionDistance.magnitude / (transform.position - transform.parent.position).magnitude);
     }
     private void OnCollisionExit(Collision collision)
     {

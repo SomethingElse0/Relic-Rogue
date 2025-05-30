@@ -14,6 +14,7 @@ public class PlayerMovement : MonoBehaviour
     InputAction interact;
     GameObject weapon;
     GameObject dashDestination;
+    Ray ray;
     float playerSpeed = 5f;
     float dashCoolldown = 1.5f;
     float lastDashTime = -10;
@@ -35,7 +36,8 @@ public class PlayerMovement : MonoBehaviour
         attack = actions.FindActionMap("Movement").FindAction("attack");
         actions.FindActionMap("Movement").FindAction("attack").performed += OnAttack;
         rb = GetComponent<Rigidbody>();
-        
+        ray.origin = transform.position;
+        ray.direction = dashDestination.transform.localPosition;
     }
     private void Awake()
     {
@@ -43,6 +45,10 @@ public class PlayerMovement : MonoBehaviour
     }
     private void OnEnable() => actions.Enable();
     private void OnDisable() => actions.Disable();
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.tag == "Bullet") hp -= collision.gameObject.GetComponent<Bullet>().damage;
+    }
     private void OnTriggerEnter(Collider other)
     {
         interactableObject = other.gameObject;
@@ -75,6 +81,8 @@ public class PlayerMovement : MonoBehaviour
             lastDashTime = Time.fixedTime;
             if (velocity.magnitude > 0) dashDirection = velocity * playerSpeed*3 / velocity.magnitude;
             else dashDirection = savedVelocity * playerSpeed*3;
+
+            Vector3 correction = new Vector3(-1, 0);
             dashDestination.GetComponent<Dash_Destination>().Dash();
             OnDisable();
             transform.position = dashDestination.transform.position;

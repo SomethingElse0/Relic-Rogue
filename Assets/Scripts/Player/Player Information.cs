@@ -17,7 +17,7 @@ public class PlayerInformation : MonoBehaviour
     float playerSpeed = 4.5f;
     private void Start()
     {
-        maxPlayerHP = 4 + characterLV * characterHPmult;
+        maxPlayerHP = 4 + characterLV *10* characterHPmult;
         inventorySlots = characterLV + purchacedInventorySlots;
 
     }
