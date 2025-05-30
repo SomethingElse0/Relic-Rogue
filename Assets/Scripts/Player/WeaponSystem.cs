@@ -34,6 +34,7 @@ public class WeaponSystem : MonoBehaviour
         {
             Instantiate(bullet, transform.position + direction, transform.rotation);
             ammo--;
+            bullet.GetComponent<Rigidbody>().AddRelativeForce(Vector3.forward*5);
             timeOfLastAttack = Time.time + GunData.attackCooldown;
         }
     }
