@@ -22,21 +22,12 @@ public class Dash_Destination : MonoBehaviour
     }
     private void Update()
     {
-        //gets the 
         direction = transform.parent.GetComponent<Rigidbody>().velocity;
         if (direction.magnitude != 0) transform.position = transform.parent.position + new Vector3(direction.normalized.x * magnitude, direction.normalized.y * magnitude, 0);
-        
-        print("DIR" + direction);
-        print(transform.position - transform.parent.position);
         if (hitSomething == false && magnitude +1< playerSpeed) magnitude ++;
         else if (hitSomething == false) magnitude = playerSpeed;
-        
     }
-    public void Dash()
-    {
-        /*if (direction.magnitude!>0) transform.position = new Vector3(normalDirection.x, normalDirection.y, 0)*magnitude + transform.position;
-        print((transform.position - transform.parent.position));*/
-    }
+
     private void OnCollisionEnter(Collision collision)
     {
         

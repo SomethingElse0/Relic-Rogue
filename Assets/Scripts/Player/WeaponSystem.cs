@@ -11,6 +11,7 @@ public class WeaponSystem : MonoBehaviour
     float oldDirection=1;
     int ammo;//I will need to go back and change this out to get ammo to replenish automatically
     GameObject bullet;
+    GameObject dashDestination;
     float timeSinceLastReload;
     float timeOfLastAttack;
     WeaponData GunData;
@@ -33,6 +34,7 @@ public class WeaponSystem : MonoBehaviour
         if (ammo > 0&&Time.time>timeSinceLastReload + GunData.reloadTime &&Time.time>timeOfLastAttack)
         {
             Instantiate(bullet, transform.position + direction, transform.rotation);
+            bullet.transform.GetComponent<Bullet>().Bounces(2, dashDestination.transform, 5);
             ammo--;
             bullet.GetComponent<Rigidbody>().AddRelativeForce(Vector3.forward*5);
             timeOfLastAttack = Time.time + GunData.attackCooldown;
@@ -43,9 +45,9 @@ public class WeaponSystem : MonoBehaviour
         timeSinceLastReload = Time.time;
         ammo = GunData.maxAmmo;
     }
-    void ChangeWeapon(ScriptableObject newWeapon)
+    void ChangeWeapon(WeaponData newWeapon)
     {
-        // set variables to newWeapon Variables including: Ammo, bullet, reload time, attack cooldown, max ammo, gun model
+        GunData = newWeapon;
         Reload();
     }
 }

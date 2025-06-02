@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class Bullet : MonoBehaviour
 {
@@ -9,10 +10,11 @@ public class Bullet : MonoBehaviour
     Rigidbody rb;
     float damagePrivate;
     public float damage;
+    Transform parent;
     void Awake()
     {
         rb = GetComponent<Rigidbody>();
-        
+        if (transform.parent.CompareTag(tag)) parent = transform.parent;
     }
     private void Update()
     {
@@ -23,12 +25,14 @@ public class Bullet : MonoBehaviour
     {
         damagePrivate = newDamage;
         bounces = i;
-        rb.velocity=(10*(target.position-transform.position).normalized);
+        if (target.position==parent.position) rb.velocity = (10 * (transform.position - target.position).normalized);
+        else rb.velocity=(10*(target.position-transform.position).normalized);
     }
     private void OnCollisionEnter(Collision collision)
     {
+        //if 
         bounces--;
         damage--;
-        if (bounces < 0) Destroy(gameObject);
+        if (bounces < 0) Destroy(gameObject,0.1f);
     }
 }

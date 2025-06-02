@@ -123,7 +123,7 @@
                 {
                     "name": "",
                     "id": "73bc8b60-b4d3-4fed-8b34-1d412d49ea82",
-                    "path": "<Gamepad>/leftShoulder",
+                    "path": "<Gamepad>/leftTrigger",
                     "interactions": "",
                     "processors": "",
                     "groups": "controller",
@@ -149,6 +149,17 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard",
+                    "action": "attack",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "5dde9502-c665-417f-9a69-241b4c626f17",
+                    "path": "<Gamepad>/rightTrigger",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
                     "action": "attack",
                     "isComposite": false,
                     "isPartOfComposite": false

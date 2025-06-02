@@ -8,8 +8,11 @@ public class Enemy1 : MonoBehaviour
     NavMeshAgent agent;
     public GameObject player;
     GameObject bullet;
+    GameObject bulletHolder;
     float attackCooldown=3;
     float attackTime=-100;
+    bool hasAggro;
+    bool lineOfSight;
     
     // Start is called before the first frame update
     void Start()
@@ -17,7 +20,7 @@ public class Enemy1 : MonoBehaviour
         agent = GetComponent<NavMeshAgent>();
         bullet = transform.GetChild(0).gameObject;
         bullet.SetActive(false);
-        
+        bulletHolder = transform.parent.GetChild(0).gameObject;
     }
 
     // Update is called once per frame
@@ -25,10 +28,18 @@ public class Enemy1 : MonoBehaviour
     {
         //basically a line of sight thing
         agent.SetDestination(player.transform.position);
-        if (agent.remainingDistance < (player.transform.position - transform.position).magnitude + 3 && (agent.destination-player.transform.position).magnitude<1) agent.speed = 12f;
-        else agent.speed = 1;
+        if (agent.remainingDistance < (player.transform.position - transform.position).magnitude + 3 && (agent.destination - player.transform.position).magnitude<0.1f)
+        {
+            agent.speed = 7f;
+            lineOfSight = true;
+        }
+        else 
+        {
+            agent.speed = 1; 
+            lineOfSight = false;
+        }
         print(agent.velocity.magnitude);
-        if (agent.remainingDistance < 10&&agent.velocity.magnitude==0 && Time.fixedTime > attackCooldown + attackTime) Attack();
+        if (agent.remainingDistance < 10 && agent.velocity.magnitude==0 && Time.fixedTime > attackCooldown + attackTime&&lineOfSight==true) Attack();
     }
     void Attack()
     {

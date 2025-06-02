@@ -38,11 +38,9 @@ public class PlayerMovement : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         ray.origin = transform.position;
         ray.direction = dashDestination.transform.localPosition;
+        weapon=transform.GetChild(transform.childCount - 1).gameObject;
     }
-    private void Awake()
-    {
-        
-    }
+
     private void OnEnable() => actions.Enable();
     private void OnDisable() => actions.Disable();
     private void OnCollisionEnter(Collision collision)
@@ -60,7 +58,11 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (hp < 0) playerSpeed = 0;
+        if (hp < 0)
+        {
+            playerSpeed = 0;
+            actions.Disable();
+        }
         else
         {
             Vector2 movementValue = playerSpeed * movement.ReadValue<Vector2>();
@@ -83,7 +85,6 @@ public class PlayerMovement : MonoBehaviour
             else dashDirection = savedVelocity * playerSpeed*3;
 
             Vector3 correction = new Vector3(-1, 0);
-            dashDestination.GetComponent<Dash_Destination>().Dash();
             OnDisable();
             transform.position = dashDestination.transform.position;
             OnEnable();
@@ -96,8 +97,7 @@ public class PlayerMovement : MonoBehaviour
     }
     void OnAttack(InputAction.CallbackContext context)
     {
-        /*if (lastDashTime + 0.1f > Time.fixedTime) weapon.SendMessage("dashAttack");
-        else weapon.SendMessage("attack");*/
+        weapon.SendMessage("Attack");
         print("hi");
     }
     void OnPause()
