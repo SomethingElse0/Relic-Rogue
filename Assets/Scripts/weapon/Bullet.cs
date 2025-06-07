@@ -11,6 +11,7 @@ public class Bullet : MonoBehaviour
     float damagePrivate;
     public float damage;
     Transform parent;
+    float maxSpeed = 12;
     void Awake()
     {
         rb = GetComponent<Rigidbody>();
@@ -25,17 +26,21 @@ public class Bullet : MonoBehaviour
     {
         damagePrivate = newDamage;
         bounces = i;
-        if (target.position==parent.position) rb.velocity = (10 * (transform.position - target.position).normalized);
-        else rb.velocity=(10*(target.position-transform.position).normalized);
+        rb.velocity=12*rb.velocity.normalized;
+        
         damage = damagePrivate;
     }
     private void OnCollisionEnter(Collision collision)
     {
-        //if 
+        
         bounces--;
         damagePrivate--;
         if (bounces < 0) Destroy(gameObject,0.1f);
         if (damagePrivate == 0) Destroy(gameObject, 0.1f);
         damage = damagePrivate;
+    }
+    private void OnTriggerEnter(Collider other)
+    {
+        //if (collision.hasComponent(reflector)){damagePrivate+=2; rb.velocity= \reflector.direction*rb.velocity.magnitude;}
     }
 }
