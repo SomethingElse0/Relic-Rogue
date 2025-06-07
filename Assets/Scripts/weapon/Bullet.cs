@@ -18,7 +18,7 @@ public class Bullet : MonoBehaviour
     }
     private void Update()
     {
-        damage = damagePrivate;
+        
     }
     // Update is called once per frame
     public void Bounces(int i, Transform target, float newDamage)
@@ -27,12 +27,15 @@ public class Bullet : MonoBehaviour
         bounces = i;
         if (target.position==parent.position) rb.velocity = (10 * (transform.position - target.position).normalized);
         else rb.velocity=(10*(target.position-transform.position).normalized);
+        damage = damagePrivate;
     }
     private void OnCollisionEnter(Collision collision)
     {
         //if 
         bounces--;
-        damage--;
+        damagePrivate--;
         if (bounces < 0) Destroy(gameObject,0.1f);
+        if (damagePrivate == 0) Destroy(gameObject, 0.1f);
+        damage = damagePrivate;
     }
 }

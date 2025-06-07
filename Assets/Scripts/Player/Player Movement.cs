@@ -12,8 +12,10 @@ public class PlayerMovement : MonoBehaviour
     InputAction movement;
     InputAction move;
     InputAction interact;
+    InputAction changeWeapon;
     GameObject weapon;
     GameObject dashDestination;
+    List<ScriptableObject> weapons = new List<ScriptableObject>();
     Ray ray;
     float playerSpeed = 5f;
     float dashCoolldown = 1.5f;
@@ -24,6 +26,11 @@ public class PlayerMovement : MonoBehaviour
     Vector3 dashDirection;
     Rigidbody rb;
     GameObject interactableObject;
+    int coin;
+    int fuel;
+    int scrap;
+    int rations;
+    bool levelKey=false;
     
     void Start()
     {
@@ -35,6 +42,8 @@ public class PlayerMovement : MonoBehaviour
         movement = actions.FindActionMap("Movement").FindAction("movement");
         attack = actions.FindActionMap("Movement").FindAction("attack");
         actions.FindActionMap("Movement").FindAction("attack").performed += OnAttack;
+        changeWeapon = actions.FindActionMap("Movement").FindAction("change");
+        actions.FindActionMap("Movement").FindAction("attack").performed += ChangeWeapon;
         rb = GetComponent<Rigidbody>();
         ray.origin = transform.position;
         ray.direction = dashDestination.transform.localPosition;
@@ -70,7 +79,7 @@ public class PlayerMovement : MonoBehaviour
             Debug.Log("hi" + movement.ReadValue<Vector2>().x);
 
             if (velocity.magnitude != 0 && velocity / velocity.magnitude != savedVelocity) savedVelocity = velocity / velocity.magnitude;
-        }
+        }   
     }
     void OnInteract(InputAction.CallbackContext context)
     {
@@ -88,7 +97,7 @@ public class PlayerMovement : MonoBehaviour
             OnDisable();
             transform.position = dashDestination.transform.position;
             OnEnable();
-            dashDestination.GetComponent<Dash_Destination>().PositionReset();
+            
         }
     }
     void OnMove(InputAction.CallbackContext context)
@@ -104,5 +113,24 @@ public class PlayerMovement : MonoBehaviour
     {
         if (actions.enabled == true) OnDisable();
         else OnEnable();
+    }
+    void Pickup(string item)
+    {
+        if (item == "coin") coin++;
+        else if (item == "scrap") scrap++;
+        else if (item == "fuel") fuel++;
+        else if (item == "rations") rations++;
+        else if (item == "levelKey") levelKey=true;
+    }
+    void OpenDoor(GameObject door)
+    {
+        if (levelKey == true) door.SendMessage("hasKey");
+        levelKey = false;
+    }
+    void ChangeWeapon(InputAction.CallbackContext callbackContext)
+    {
+        weapons.Add(weapons[0]);
+        weapon.SendMessage("ChangeWeapon", weapons[1]);
+        weapons.RemoveAt(0);
     }
 }

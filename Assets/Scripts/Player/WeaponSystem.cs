@@ -34,7 +34,7 @@ public class WeaponSystem : MonoBehaviour
         if (ammo > 0&&Time.time>timeSinceLastReload + GunData.reloadTime &&Time.time>timeOfLastAttack)
         {
             Instantiate(bullet, transform.position + direction, transform.rotation);
-            bullet.transform.GetComponent<Bullet>().Bounces(2, dashDestination.transform, 5);
+            bullet.transform.GetComponent<Bullet>().Bounces(2, dashDestination.transform, GunData.damage);
             ammo--;
             bullet.GetComponent<Rigidbody>().AddRelativeForce(Vector3.forward*5);
             timeOfLastAttack = Time.time + GunData.attackCooldown;

@@ -9,10 +9,11 @@ public class Enemy1 : MonoBehaviour
     public GameObject player;
     GameObject bullet;
     GameObject bulletHolder;
-    float attackCooldown=3;
-    float attackTime=-100;
+    float attackCooldown=5;
+    float attackTime=10;
     bool hasAggro;
-    bool lineOfSight;
+    bool lineOfSight=false;
+    Light light;
     
     // Start is called before the first frame update
     void Start()
@@ -21,6 +22,7 @@ public class Enemy1 : MonoBehaviour
         bullet = transform.GetChild(0).gameObject;
         bullet.SetActive(false);
         bulletHolder = transform.parent.GetChild(0).gameObject;
+        light = transform.GetChild(1).GetComponent<Light>();
     }
 
     // Update is called once per frame
@@ -39,11 +41,15 @@ public class Enemy1 : MonoBehaviour
             lineOfSight = false;
         }
         print(agent.velocity.magnitude);
-        if (agent.remainingDistance < 10 && agent.velocity.magnitude==0 && Time.fixedTime > attackCooldown + attackTime&&lineOfSight==true) Attack();
+        if (agent.remainingDistance < 10 && agent.velocity.magnitude == 0 && Time.fixedTime > attackCooldown + attackTime && lineOfSight == true)
+        {
+            if((player.transform.position-transform.position).normalized==transform.forward)Attack();
+        }
+        light.intensity = 1+(2 * Mathf.Cos(Time.fixedTime));
     }
     void Attack()
     {
-        GameObject newBullet = Instantiate<GameObject>(bullet, transform.position+(player.transform.position-transform.position).normalized, transform.rotation);
+        GameObject newBullet = Instantiate(bullet, transform.position+(player.transform.position-transform.position).normalized, transform.rotation);
         attackTime = Time.fixedTime;
         newBullet.SetActive(true);
         newBullet.GetComponent<Bullet>().Bounces(3, player.transform, 5);

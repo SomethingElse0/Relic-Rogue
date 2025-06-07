@@ -21,9 +21,9 @@ public class GenerateScrap : MonoBehaviour
     int colliders; // counter for the number of objects actively collided with
     float counters; // counter for the number of objects to be created
     bool isInLevel; // is the specified position in the level?
-    float nextItemTime=20;
-    float itemTimeInterval;
-    int itemNumberCount;
+    float nextItemTime=60;
+    float itemTimeInterval=60;
+    int itemNumberCount=0;
     void Awake()
     {
         // identifying what each object is
@@ -114,7 +114,7 @@ public class GenerateScrap : MonoBehaviour
     }
     public void GenerateSpecific(GameObject item)
     {
-        if (item!=gameObject) generateQueue.Add(item);
+        if (item != gameObject) generateQueue.Add(item);
         while (generateQueue.Count>0)
         {
             if (isInLevel && colliders == 0)
