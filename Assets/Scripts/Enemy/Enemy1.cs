@@ -50,11 +50,14 @@ public class Enemy1 : MonoBehaviour
                 agent.speed = 1;
                 lineOfSight = false;
             }
-            print(agent.velocity.magnitude);
-            if (agent.remainingDistance < 10 && agent.velocity.magnitude == 0 && Time.fixedTime > attackCooldown + attackTime && lineOfSight == true)
+            if (agent.remainingDistance < 10 && agent.velocity.magnitude == 0)
             {
-                if ((player.transform.position - transform.position).normalized == transform.forward) Attack();
+                agent.updateRotation = false;
+                transform.LookAt(player.transform);
+                agent.updateRotation = true;
+                if ((player.transform.position - transform.position).normalized == transform.forward && Time.fixedTime > attackCooldown + attackTime) Attack();
             }
+            
         }
         else
         {
@@ -70,10 +73,10 @@ public class Enemy1 : MonoBehaviour
     }
     void Attack()
     {
-        GameObject newBullet = Instantiate(bullet, transform.position+(player.transform.position-transform.position).normalized, transform.rotation);
+        GameObject newBullet = Instantiate(bullet, transform.position+(player.transform.position-transform.position).normalized, transform.rotation, transform.parent.GetChild(0));
         attackTime = Time.fixedTime;
         newBullet.SetActive(true);
-        newBullet.GetComponent<Bullet>().Bounces(3, player.transform, 5);
+        newBullet.GetComponent<Bullet>().Bounces(3, transform.position, 5);
         
     }
 }

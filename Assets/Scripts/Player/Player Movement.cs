@@ -15,7 +15,7 @@ public class PlayerMovement : MonoBehaviour
     InputAction changeWeapon;
     GameObject weapon;
     GameObject dashDestination;
-    List<ScriptableObject> weapons = new List<ScriptableObject>();
+    public List<ScriptableObject> weapons = new List<ScriptableObject>();
     Ray ray;
     float playerSpeed = 5f;
     float dashCoolldown = 1.5f;
@@ -48,6 +48,7 @@ public class PlayerMovement : MonoBehaviour
         ray.origin = transform.position;
         ray.direction = dashDestination.transform.localPosition;
         weapon=transform.GetChild(transform.childCount - 1).gameObject;
+        weapon.SendMessage("ChangeWeapon", weapons[0], SendMessageOptions.DontRequireReceiver);
     }
 
     private void OnEnable() => actions.Enable();
@@ -59,12 +60,12 @@ public class PlayerMovement : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         interactableObject = other.gameObject;
+        if (interactableObject.tag == "ammo") weapon.SendMessage("PickupBullet", SendMessageOptions.DontRequireReceiver);
     }
     private void OnTriggerExit(Collider other)
     {
         if (interactableObject == other.gameObject) interactableObject = null;
     }
-    // Update is called once per frame
     void Update()
     {
         if (hp < 0)
@@ -76,14 +77,13 @@ public class PlayerMovement : MonoBehaviour
         {
             Vector2 movementValue = playerSpeed * movement.ReadValue<Vector2>();
             rb.velocity = new Vector3(movementValue.x, movementValue.y, 0);
-            Debug.Log("hi" + movement.ReadValue<Vector2>().x);
 
             if (velocity.magnitude != 0 && velocity / velocity.magnitude != savedVelocity) savedVelocity = velocity / velocity.magnitude;
         }   
     }
     void OnInteract(InputAction.CallbackContext context)
     {
-        if (interactableObject!=null)interactableObject.SendMessage("Interact");
+        if (interactableObject!=null)interactableObject.SendMessage("Interact",SendMessageOptions.DontRequireReceiver);
     }
     void OnDash(InputAction.CallbackContext context)
     {
@@ -92,11 +92,8 @@ public class PlayerMovement : MonoBehaviour
             lastDashTime = Time.fixedTime;
             if (velocity.magnitude > 0) dashDirection = velocity * playerSpeed*3 / velocity.magnitude;
             else dashDirection = savedVelocity * playerSpeed*3;
-
+            dashDestination.SendMessage("OnDash");
             Vector3 correction = new Vector3(-1, 0);
-            OnDisable();
-            transform.position = dashDestination.transform.position;
-            OnEnable();
             
         }
     }
@@ -106,8 +103,7 @@ public class PlayerMovement : MonoBehaviour
     }
     void OnAttack(InputAction.CallbackContext context)
     {
-        weapon.SendMessage("Attack");
-        print("hi");
+        weapon.SendMessage("Attack", SendMessageOptions.DontRequireReceiver);
     }
     void OnPause()
     {
@@ -124,13 +120,13 @@ public class PlayerMovement : MonoBehaviour
     }
     void OpenDoor(GameObject door)
     {
-        if (levelKey == true) door.SendMessage("hasKey");
+        if (levelKey == true) door.SendMessage("hasKey", SendMessageOptions.DontRequireReceiver);
         levelKey = false;
     }
     void ChangeWeapon(InputAction.CallbackContext callbackContext)
     {
         weapons.Add(weapons[0]);
-        weapon.SendMessage("ChangeWeapon", weapons[1]);
+        weapon.SendMessage("ChangeWeapon", weapons[1], SendMessageOptions.DontRequireReceiver);
         weapons.RemoveAt(0);
     }
 }

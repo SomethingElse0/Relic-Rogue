@@ -22,11 +22,13 @@ public class Bullet : MonoBehaviour
         
     }
     // Update is called once per frame
-    public void Bounces(int i, Transform target, float newDamage)
+    public void Bounces(int i, Vector3 direction, float newDamage)
     {
         damagePrivate = newDamage;
         bounces = i;
-        rb.velocity=12*rb.velocity.normalized;
+
+        print("sdnodns");
+        rb.AddForce(direction*5);
         
         damage = damagePrivate;
     }

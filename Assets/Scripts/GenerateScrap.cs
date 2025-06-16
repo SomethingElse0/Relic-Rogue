@@ -49,7 +49,7 @@ public class GenerateScrap : MonoBehaviour
         else
         {
             colliders++;
-            transform.position = new Vector3(Random.Range(0, 100), Random.Range(0, 100), 0);
+            transform.position = new Vector3(Random.Range(-30, 30), Random.Range(-30, 30), 0);
         }
     }
     private void OnCollisionExit(Collision collision)

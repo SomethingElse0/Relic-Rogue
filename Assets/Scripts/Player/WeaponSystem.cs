@@ -8,24 +8,25 @@ public class WeaponSystem : MonoBehaviour
     // Start is called before the first frame update
     InputActionAsset actions;
     Vector3 direction;
-    float oldDirection=1;
     int ammo;//I will need to go back and change this out to get ammo to replenish automatically
     GameObject bullet;
+    public Transform bulletLocation;
     GameObject dashDestination;
     float timeSinceLastReload;
     float timeOfLastAttack;
     WeaponData GunData;
-
+    private void Awake()
+    {
+        bullet = transform.GetChild(0).gameObject;
+        actions = transform.parent.GetComponent<PlayerMovement>().actions;
+        dashDestination = transform.parent.GetChild(transform.GetSiblingIndex() - 2).gameObject;
+        bullet.SetActive(false);
+    }
     void Update()
     {
-        if (Input.mousePresent) direction = Camera.main.ScreenToWorldPoint(Vector3.Normalize(new Vector3(Input.mousePosition.x, Input.mousePosition.y, transform.position.z)));
-        else direction = actions.FindActionMap("Movement").FindAction("movement").ReadValue<Vector2>();
-        if (direction.x * oldDirection < 0)
-        {
-            transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z); 
-            oldDirection = direction.x;
-        }
-        transform.LookAt(direction);
+        /*if (Input.mousePresent) direction = Camera.main.ScreenToWorldPoint(Vector3.Normalize(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 0)-transform.position));
+        else*/ direction = actions.FindActionMap("Movement").FindAction("movement").ReadValue<Vector2>();
+        transform.LookAt(direction+transform.position);
     }
 
     // Update is called once per frame
@@ -33,10 +34,12 @@ public class WeaponSystem : MonoBehaviour
     {
         if (ammo > 0&&Time.time>timeSinceLastReload + GunData.reloadTime &&Time.time>timeOfLastAttack)
         {
-            Instantiate(bullet, transform.position + direction, transform.rotation);
-            bullet.transform.GetComponent<Bullet>().Bounces(2, dashDestination.transform, GunData.damage);
+            GameObject newBullet = Instantiate(bullet, transform.position + direction.normalized, transform.rotation, transform);
+            newBullet.SetActive(true);
+            newBullet.transform.parent = bulletLocation;
+            bullet.transform.GetComponent<Bullet>().Bounces(2, direction.normalized, GunData.damage);
             ammo--;
-            bullet.GetComponent<Rigidbody>().AddRelativeForce(Vector3.forward*5);
+            
             timeOfLastAttack = Time.time + GunData.attackCooldown;
         }
     }
@@ -49,5 +52,9 @@ public class WeaponSystem : MonoBehaviour
     {
         GunData = newWeapon;
         Reload();
+    }
+    void PickUpBullet()
+    {
+        if (ammo < GunData.maxAmmo) ammo++;
     }
 }
