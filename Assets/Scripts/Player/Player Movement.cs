@@ -20,7 +20,8 @@ public class PlayerMovement : MonoBehaviour
     float playerSpeed = 5f;
     float dashCoolldown = 1.5f;
     float lastDashTime = -10;
-    float hp = 20;
+    public float hp = 20;
+    public int maxHP = 20;
     Vector3 velocity=new Vector3 (0,0,0);
     Vector3 savedVelocity=new Vector3 (0,1,0);
     Vector3 dashDirection;

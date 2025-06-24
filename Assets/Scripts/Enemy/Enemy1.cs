@@ -77,6 +77,5 @@ public class Enemy1 : MonoBehaviour
         attackTime = Time.fixedTime;
         newBullet.SetActive(true);
         newBullet.GetComponent<Bullet>().Bounces(3, transform.position, 5);
-        
     }
 }

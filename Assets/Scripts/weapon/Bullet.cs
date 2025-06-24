@@ -27,7 +27,7 @@ public class Bullet : MonoBehaviour
         damagePrivate = newDamage;
         bounces = i;
 
-        print("sdnodns");
+        
         rb.AddForce(direction*5);
         
         damage = damagePrivate;
