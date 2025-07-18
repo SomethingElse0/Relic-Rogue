@@ -12,13 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 69a61dc9c441c494ea1c7c59799e9e67, type: 3}
   m_Name: PlayerData
   m_EditorClassIdentifier: 
-  characterLV: 0
-  maxPlayerHP: 0
-  characterHPmult: 0
+  maxPlayerHP: 20
   basePlayerDEF: 0
-  characterDEFmult: 0
-  basePlayerATK: 0
-  characterATKmult: 0
-  inventorySlots: 0
-  purchacedInventorySlots: 0
-  playerSpeed: 0
+  basePlayerATK: 2
+  playerSpeed: 3.5

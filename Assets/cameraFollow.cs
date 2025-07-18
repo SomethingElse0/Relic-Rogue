@@ -19,7 +19,7 @@ public class cameraFollow : MonoBehaviour
     void Update()
     {
         destination= new Vector3(player.position.x, player.position.y, transform.position.z);
-        if ((destination - transform.position).magnitude > 1)
+        if ((destination - transform.position).magnitude <2000&& (destination - transform.position).magnitude >1)
         {
             agent.SetDestination(destination);
             agent.speed = 4 + 2 * agent.remainingDistance;

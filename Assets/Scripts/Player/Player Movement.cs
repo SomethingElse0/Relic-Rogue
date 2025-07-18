@@ -37,7 +37,7 @@ public class PlayerMovement : MonoBehaviour
     bool levelKey=false;
     public float closeEnemies;
     public AudioSource battle;
-    bool weaponEnabled;
+    public bool weaponEnabled;
     
     void Start()
     {
@@ -84,18 +84,18 @@ public class PlayerMovement : MonoBehaviour
     void Update()
     {
         if (weaponEnabled != weapon.activeInHierarchy) weapon.SetActive(weaponEnabled);
-        if (hp < 0)
+        if (hp > 0)
         {
-            
-            actions.Disable();
-            weaponEnabled = false;
-        }
-        else
-        {
-            Vector2 movementValue = playerData.playerSpeed * movement.ReadValue<Vector2>();
+             Vector2 movementValue = playerData.playerSpeed * movement.ReadValue<Vector2>();
             rb.velocity = new Vector3(movementValue.x, movementValue.y, 0);
 
             if (velocity.magnitude != 0 && velocity / velocity.magnitude != savedVelocity) savedVelocity = velocity / velocity.magnitude;
+            
+        }
+        else
+        {
+            actions.Disable();
+            weaponEnabled = false;
         }
         if (closeEnemies>0 && battle.volume < 0.7) battle.volume += 0.02f;
         else if (closeEnemies==0 && battle.volume > 0) battle.volume -= 0.01f;
