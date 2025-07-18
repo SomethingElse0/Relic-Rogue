@@ -5,14 +5,12 @@ using UnityEngine;
 public class Doors : MonoBehaviour
 {
     // Start is called before the first frame update
-    void Start()
+    public GameObject _object;
+    void Interact(Transform player)
     {
-        
-    }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+        player.SendMessage("OpenDoor");
+        if (_object != gameObject) _object.SetActive(true);
+        gameObject.SetActive(false);
     }
 }

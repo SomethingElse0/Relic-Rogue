@@ -1,0 +1,14 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class StealthyApproach : MonoBehaviour
+{
+    // Start is called before the first frame update
+    public Deck target;
+    private void Awake()
+    {
+        target.enemyAwareness-=5;
+        Destroy(this);   
+    }
+}

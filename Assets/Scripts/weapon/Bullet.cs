@@ -7,6 +7,7 @@ public class Bullet : MonoBehaviour
 {
     // Start is called before the first frame update
     int bounces=100;
+    public Deck deck;
     Rigidbody rb;
     float damagePrivate;
     public float damage;
@@ -26,15 +27,12 @@ public class Bullet : MonoBehaviour
     {
         damagePrivate = newDamage;
         bounces = i;
-
-        
         rb.AddForce(direction*5);
-        
         damage = damagePrivate;
     }
     private void OnCollisionEnter(Collision collision)
     {
-        
+        collision.gameObject.SendMessage("OnHit", damage + deck.damageModifier, SendMessageOptions.DontRequireReceiver);
         bounces--;
         damagePrivate--;
         if (bounces < 0) Destroy(gameObject,0.1f);

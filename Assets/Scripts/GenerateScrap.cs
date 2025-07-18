@@ -24,15 +24,22 @@ public class GenerateScrap : MonoBehaviour
     float nextItemTime=60;
     float itemTimeInterval=60;
     int itemNumberCount=0;
+    float cooldown = 0.1f;
+    float lastAttempt;
     void Awake()
     {
         // identifying what each object is
         GameObject scrap = transform.GetChild(0).gameObject;
+        scrap.SetActive(false);
         GameObject coin = transform.GetChild(1).gameObject;
+        coin.SetActive(false);
         GameObject ration = transform.GetChild(2).gameObject;
+        ration.SetActive(false);
         GameObject fuel = transform.GetChild(3).gameObject;
+        fuel.SetActive(false);
         GameObject levelKey = transform.GetChild(4).gameObject;
-        
+        levelKey.SetActive(false);
+
     }
     private void Update()
     {
@@ -42,24 +49,26 @@ public class GenerateScrap : MonoBehaviour
             itemTimeInterval = Time.fixedTime + nextItemTime;
             itemNumberCount++;
         }
-    }
-    private void OnCollisionEnter(Collision collision)
-    {
-        if (collision.gameObject.CompareTag("Floor")) isInLevel = true;
-        else
+        if (colliders != 1&Time.fixedTime>cooldown+lastAttempt)
         {
-            colliders++;
             transform.position = new Vector3(Random.Range(-30, 30), Random.Range(-30, 30), 0);
+            Ray newRay = new Ray(transform.position, new Vector3(0,0,1));
+            if (Physics.Raycast(newRay, 5)) isInLevel = true;
+            else isInLevel = false;
+            lastAttempt = Time.fixedTime;
+            
         }
+        
+    }
+    private void OnCollisionStay(Collision collision)
+    {
+            colliders=1;
     }
     private void OnCollisionExit(Collision collision)
     {
-        if (collision.gameObject.CompareTag("Floor")) isInLevel = false;
-        else
-        {
-            colliders--;
-        }
+        colliders = 0;
     }
+
     public void RandomItem(int modifier, int counter)
     {
         counters += counter;
@@ -112,15 +121,88 @@ public class GenerateScrap : MonoBehaviour
         coinCount++;
         GenerateSpecific(gameObject);
     }
+    public void RandomItem(int counter)
+    {
+        counters += counter;
+        int totalCount = coinCount + rationCount + fuelCount;
+        totalCount -= Random.Range(0, totalCount + scrapCount);
+        while (counters > 0)
+        {
+            if (totalCount < 0)
+            {
+                GenerateSpecific(scrap);
+                scrapCount--;
+            }
+            else
+            {
+                totalCount -= rationCount;
+                if (totalCount < 0)
+                {
+                    generateQueue.Add(ration);
+                    rationCount--;
+                }
+                else
+                {
+                    totalCount -= fuelCount;
+                    if (totalCount < 0)
+                    {
+                        generateQueue.Add(fuel);
+                        fuelCount--;
+                    }
+                    else
+                    {
+                        totalCount -= levelKeyCount;
+                        if (totalCount < 0)
+                        {
+                            generateQueue.Add(coin);
+                            coinCount--;
+                        }
+                        else
+                        {
+                            generateQueue.Add(levelKey);
+                            levelKeyCount--;
+                        }
+                    }
+                }
+            }
+            counters--;
+        }
+        scrapCount++;
+        rationCount++;
+        fuelCount++;
+        coinCount++;
+        GenerateSpecific(gameObject);
+    }
     public void GenerateSpecific(GameObject item)
     {
         if (item != gameObject) generateQueue.Add(item);
         while (generateQueue.Count>0)
         {
+            
             if (isInLevel && colliders == 0)
             {
                 Instantiate(generateQueue[0], transform.position, transform.rotation);
                 generateQueue.RemoveAt(0);
+                
+            }
+        }
+    }
+    public void GenerateSpecific(string itemName)
+    {
+        
+        if (itemName == "coin") generateQueue.Add(coin);
+        else if (itemName == "scrap") generateQueue.Add(scrap);
+        else if (itemName == "ration") generateQueue.Add(ration);
+        else if (itemName == "fuel") generateQueue.Add(fuel);
+        else if (itemName == "key") generateQueue.Add(levelKey);
+        while (generateQueue.Count > 0)
+        {
+
+            if (isInLevel && colliders == 0)
+            {
+                Instantiate(generateQueue[0], transform.position, transform.rotation);
+                generateQueue.RemoveAt(0);
+
             }
         }
     }

@@ -1,24 +1,19 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
-public class PlayerInformation : MonoBehaviour
+[CreateAssetMenu(fileName = "PlayerData", menuName = "ScriptableObjects/PlayerData", order = 1)]
+public class PlayerData : ScriptableObject
 {
     // Start is called before the first frame update
-    int characterLV;
-    int maxPlayerHP;
-    int characterHPmult;
-    int basePlayerDEF;
-    int characterDEFmult;
-    int basePlayerATK;
-    int characterATKmult;
-    int inventorySlots;
-    int purchacedInventorySlots;
-    float playerSpeed = 4.5f;
-    private void Start()
-    {
-        maxPlayerHP = 4 + characterLV *10* characterHPmult;
-        inventorySlots = characterLV + purchacedInventorySlots;
-
-    }
+    public int characterLV;
+    public int maxPlayerHP;
+    public int characterHPmult;
+    public int basePlayerDEF;
+    public int characterDEFmult;
+    public int basePlayerATK;
+    public int characterATKmult;
+    public int inventorySlots;
+    public int purchacedInventorySlots;
+    public float playerSpeed;
+    public System.DateTime LastPlayed;
 }

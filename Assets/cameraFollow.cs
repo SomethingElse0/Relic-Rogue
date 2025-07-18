@@ -8,6 +8,7 @@ public class cameraFollow : MonoBehaviour
     // Start is called before the first frame update
     public Transform player;
     NavMeshAgent agent;
+    Vector3 destination;
     private void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
@@ -17,8 +18,12 @@ public class cameraFollow : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        agent.SetDestination(new Vector3(player.position.x, player.position.y, transform.position.z+0.2f*Mathf.Sin(Time.fixedTime)));
-        if (agent.remainingDistance > 1 && agent.velocity.magnitude == 0) agent.SetDestination(new Vector3(player.position.x + 0.1f, player.position.y, transform.position.z + 0.2f * Mathf.Sin(Time.fixedTime)));
-        agent.speed = 4 + 2*agent.remainingDistance;
+        destination= new Vector3(player.position.x, player.position.y, transform.position.z);
+        if ((destination - transform.position).magnitude > 1)
+        {
+            agent.SetDestination(destination);
+            agent.speed = 4 + 2 * agent.remainingDistance;
+        }
+        else agent.speed = player.GetComponent<PlayerMovement>().playerData.playerSpeed;
     }
 }

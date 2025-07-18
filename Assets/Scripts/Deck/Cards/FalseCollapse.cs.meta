@@ -1,0 +1,13 @@
+fileFormatVersion: 2
+guid: 6e744e63b18709f499b8e0a7d6654de7
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - target: {fileID: 11400000, guid: d77b922d234c7a640ab684884b85e972, type: 2}
+  - deck: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

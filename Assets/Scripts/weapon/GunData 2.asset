@@ -19,4 +19,4 @@ MonoBehaviour:
   bulletBounces: 0
   bulletsCollectable: 0
   isMelee: 1
-  gunSprite: {fileID: 0}
+  gunSprite: {fileID: 1299148089390859227, guid: aa5ed1eea3138964085c28947155e30d, type: 3}

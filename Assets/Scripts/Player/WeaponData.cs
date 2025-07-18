@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-[CreateAssetMenu(fileName = "GunData", menuName = "ScriptableObjects/SpawnManagerScriptableObject", order = 1)]
+[CreateAssetMenu(fileName = "GunData", menuName = "ScriptableObjects/GunData", order = 1)]
 public class WeaponData : ScriptableObject
 {
     public int maxAmmo;
@@ -11,5 +11,5 @@ public class WeaponData : ScriptableObject
     public int bulletBounces;
     public bool bulletsCollectable;
     public bool isMelee;
-    public Sprite gunSprite;
+    public Mesh gunSprite;
 }

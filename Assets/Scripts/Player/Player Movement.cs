@@ -15,6 +15,8 @@ public class PlayerMovement : MonoBehaviour
     InputAction changeWeapon;
     GameObject weapon;
     GameObject dashDestination;
+    public Deck deck;
+    bool dailyReward;
     public List<ScriptableObject> weapons = new List<ScriptableObject>();
     Ray ray;
     float playerSpeed = 5f;
@@ -29,9 +31,13 @@ public class PlayerMovement : MonoBehaviour
     GameObject interactableObject;
     int coin;
     int fuel;
+    public PlayerData playerData;
     int scrap;
     int rations;
     bool levelKey=false;
+    public float closeEnemies;
+    public AudioSource battle;
+    bool weaponEnabled;
     
     void Start()
     {
@@ -44,24 +50,32 @@ public class PlayerMovement : MonoBehaviour
         attack = actions.FindActionMap("Movement").FindAction("attack");
         actions.FindActionMap("Movement").FindAction("attack").performed += OnAttack;
         changeWeapon = actions.FindActionMap("Movement").FindAction("change");
-        actions.FindActionMap("Movement").FindAction("attack").performed += ChangeWeapon;
+        actions.FindActionMap("Movement").FindAction("change").performed += ChangeWeapon;
         rb = GetComponent<Rigidbody>();
         ray.origin = transform.position;
         ray.direction = dashDestination.transform.localPosition;
         weapon=transform.GetChild(transform.childCount - 1).gameObject;
         weapon.SendMessage("ChangeWeapon", weapons[0], SendMessageOptions.DontRequireReceiver);
+        if (System.DateTime.Today != playerData.LastPlayed) dailyReward = true;
+        else dailyReward = false;
+        
     }
 
     private void OnEnable() => actions.Enable();
     private void OnDisable() => actions.Disable();
-    private void OnCollisionEnter(Collision collision)
+    private void OnHit(float damage)
     {
-        if (collision.gameObject.tag == "Bullet") hp -= collision.gameObject.GetComponent<Bullet>().damage;
+        if (deck.hpTemp > damage) deck.hpTemp -= damage;
+        else
+        {
+            hp -= damage-deck.hpTemp;
+            deck.hpTemp = 0;
+        }
     }
     private void OnTriggerEnter(Collider other)
     {
         interactableObject = other.gameObject;
-        if (interactableObject.tag == "ammo") weapon.SendMessage("PickupBullet", SendMessageOptions.DontRequireReceiver);
+        if (interactableObject.tag == "ammo") weapon.SendMessage("PickUpBullet", SendMessageOptions.DontRequireReceiver);
     }
     private void OnTriggerExit(Collider other)
     {
@@ -69,18 +83,22 @@ public class PlayerMovement : MonoBehaviour
     }
     void Update()
     {
+        if (weaponEnabled != weapon.activeInHierarchy) weapon.SetActive(weaponEnabled);
         if (hp < 0)
         {
-            playerSpeed = 0;
+            
             actions.Disable();
+            weaponEnabled = false;
         }
         else
         {
-            Vector2 movementValue = playerSpeed * movement.ReadValue<Vector2>();
+            Vector2 movementValue = playerData.playerSpeed * movement.ReadValue<Vector2>();
             rb.velocity = new Vector3(movementValue.x, movementValue.y, 0);
 
             if (velocity.magnitude != 0 && velocity / velocity.magnitude != savedVelocity) savedVelocity = velocity / velocity.magnitude;
-        }   
+        }
+        if (closeEnemies>0 && battle.volume < 0.7) battle.volume += 0.02f;
+        else if (closeEnemies==0 && battle.volume > 0) battle.volume -= 0.01f;
     }
     void OnInteract(InputAction.CallbackContext context)
     {
@@ -104,7 +122,7 @@ public class PlayerMovement : MonoBehaviour
     }
     void OnAttack(InputAction.CallbackContext context)
     {
-        weapon.SendMessage("Attack", SendMessageOptions.DontRequireReceiver);
+       if(weaponEnabled) weapon.SendMessage("Attack", SendMessageOptions.DontRequireReceiver);
     }
     void OnPause()
     {
