@@ -1,25 +1,44 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 public class Menu : MonoBehaviour
 {
     // Start is called before the first frame update
-    Scene menu;
-    Scene hub;
-    float keybindTime;
-    Transform canvas;
-    InputActionAsset actions;
+    
+    public Scene menu;
+    public Scene hub;
+    float keybindTime=5;
+    public Transform canvas;
+    public InputActionAsset actions;
     int menuSceneCurrent;
-    void SceneChangeHub()
+    int arbitraryNumber;
+    string thisKey;
+    bool waitingforInput;
+    InputAction targetAction;
+    string newPath;
+    private void Awake()
     {
-        SceneManager.LoadScene(hub.buildIndex);
-        
+        Keyboard.current.onTextInput += cha => thisKey=cha.ToString();
+        menu = SceneManager.GetSceneByName("Menu");
+        hub = SceneManager.GetSceneByName("hub");
     }
-    void SceneChangeMenu()
+    private void Update()
     {
-        SceneManager.LoadScene(menu.buildIndex);
+        if (waitingforInput == true)
+        {
+            newPath=targetAction.bindings[targetAction.bindings.Count-1].path;
+            newPath=newPath.Remove(newPath.LastIndexOf('/')+1);
+            print(newPath + thisKey);
+            if (Input.anyKeyDown) UpdateKeybinds(targetAction.name, newPath+thisKey);
+        }
+    }
+    public void SceneChangeHub()
+    {
+        SceneManager.LoadScene(1);
+    }
+    public void SceneChangeMenu()
+    {
+        SceneManager.LoadScene(0);
     }
     public void MenuChange(int i)
     {
@@ -27,17 +46,46 @@ public class Menu : MonoBehaviour
         canvas.GetChild(menuSceneCurrent).gameObject.SetActive(false);
         menuSceneCurrent = i;
     }
-    void updateKeybinds(InputAction action)
+    
+    public void UpdateKeybinds(string action)
     {
-        keybindTime = Time.fixedTime + 10;
-        while (keybindTime > Time.fixedTime) 
+        waitingforInput = true;
+
+        if (action == "Up")
         {
-            if (Input.anyKeyDown) 
-            {   
-                actions.FindActionMap("Movement").FindAction(action.name).ApplyBindingOverride(Keyboard.current.quoteKey.name);
-                keybindTime = 0;
-            }
+            targetAction = actions.FindActionMap("Movement").FindAction("movement");//.ApplyBindingOverride(1, thisKey);
+            newPath = targetAction.bindings[1].path;
         }
+        else if (action == "Down")
+        {
+            targetAction = actions.FindActionMap("Movement").FindAction("movement");//.ApplyBindingOverride(2, thisKey);
+            newPath = targetAction.bindings[2].path;
+        }
+        else if (action == "Left")
+        {
+            targetAction = actions.FindActionMap("Movement").FindAction("movement");//.ApplyBindingOverride(3, thisKey);
+            newPath = targetAction.bindings[3].path;
+        }
+        else if (action == "Right")
+        {
+            targetAction = actions.FindActionMap("Movement").FindAction("movement");//.ApplyBindingOverride(4, thisKey);
+            newPath = targetAction.bindings[4].path;
+        }
+        else
+        {
+            targetAction = actions.FindActionMap("Movement").FindAction(action);//.PerformInteractiveRebinding();//.WithTimeout(keybindTime).OnMatchWaitForAnother(0.2f);
+            newPath = targetAction.bindings[0].path;
+        }
+    }
+    public void UpdateKeybinds(string action, string new_Path)
+    {
+        if (action == "Up") targetAction.ApplyBindingOverride(1, new_Path);
+        else if (action == "Down") targetAction.ApplyBindingOverride(2, new_Path);
+        else if (action == "Left") targetAction.ApplyBindingOverride(3, new_Path);
+        else if (action == "Right") targetAction.ApplyBindingOverride(4, new_Path);
+        else targetAction.ApplyBindingOverride(0, new_Path);
+        canvas.GetChild(1).GetComponent<ShowControlls>().UpdateControls();
+        waitingforInput = false;
     }
     // Update is called once per frame
 }

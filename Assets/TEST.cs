@@ -17,6 +17,7 @@ public class TEST : MonoBehaviour
         {
             GetComponent<Light>().range = 10;
             transform.position = Camera.main.ScreenToWorldPoint(Vector3.Normalize(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 1)));
+            print("theresa mouse");
         }
         else GetComponent<Light>().range = 1000;
 

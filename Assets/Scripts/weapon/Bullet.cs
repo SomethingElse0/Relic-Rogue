@@ -18,10 +18,7 @@ public class Bullet : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         if (transform.parent.CompareTag(tag)) parent = transform.parent;
     }
-    private void Update()
-    {
-        
-    }
+
     // Update is called once per frame
     public void Bounces(int i, Vector3 direction, float newDamage)
     {
