@@ -8,4 +8,6 @@ public class PlayerData : ScriptableObject
     public int basePlayerATK;
     public float playerSpeed;
     public System.DateTime LastPlayed;
+    public int coins;
+    public int keys;
 }

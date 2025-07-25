@@ -9,10 +9,13 @@ public class DailyReward : MonoBehaviour
     bool dailyRewardAvailable;
     void Awake()
     {
-        if (data.LastPlayed.Date != System.DateTime.Now.Date) ;
+        if (data.LastPlayed.Date != System.DateTime.Now.Date) dailyRewardAvailable=true;
     }
     void Interact()
     {
         data.LastPlayed = System.DateTime.Now;
+        data.keys++;
+        data.coins += Random.Range(12, 34);
+        dailyRewardAvailable = false;
     }
 }

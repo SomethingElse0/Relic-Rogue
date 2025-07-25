@@ -26,6 +26,7 @@ public class GenerateScrap : MonoBehaviour
     int itemNumberCount=0;
     float cooldown = 0.1f;
     float lastAttempt;
+    public Deck deck;
     void Awake()
     {
         // identifying what each object is
@@ -39,6 +40,7 @@ public class GenerateScrap : MonoBehaviour
         fuel.SetActive(false);
         GameObject levelKey = transform.GetChild(4).gameObject;
         levelKey.SetActive(false);
+        deck.generator = gameObject;
 
     }
     private void Update()

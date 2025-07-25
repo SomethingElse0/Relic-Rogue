@@ -13,6 +13,7 @@ public class Menu : MonoBehaviour
     int menuSceneCurrent;
     int arbitraryNumber;
     string thisKey;
+    string savedAction;
     bool waitingforInput;
     InputAction targetAction;
     string newPath;
@@ -26,10 +27,16 @@ public class Menu : MonoBehaviour
     {
         if (waitingforInput == true)
         {
-            newPath=targetAction.bindings[targetAction.bindings.Count-1].path;
-            newPath=newPath.Remove(newPath.LastIndexOf('/')+1);
-            print(newPath + thisKey);
-            if (Input.anyKeyDown) UpdateKeybinds(targetAction.name, newPath+thisKey);
+            
+            
+            
+            if (Input.anyKeyDown) 
+            {
+                print(newPath + thisKey);
+                newPath = newPath.Remove(newPath.LastIndexOf('/') + 1);
+                UpdateKeybinds(savedAction, newPath + thisKey);
+                print(newPath + thisKey);
+            }
         }
     }
     public void SceneChangeHub()
@@ -49,33 +56,19 @@ public class Menu : MonoBehaviour
     
     public void UpdateKeybinds(string action)
     {
-        waitingforInput = true;
-
-        if (action == "Up")
+        try 
         {
-            targetAction = actions.FindActionMap("Movement").FindAction("movement");//.ApplyBindingOverride(1, thisKey);
-            newPath = targetAction.bindings[1].path;
-        }
-        else if (action == "Down")
-        {
-            targetAction = actions.FindActionMap("Movement").FindAction("movement");//.ApplyBindingOverride(2, thisKey);
-            newPath = targetAction.bindings[2].path;
-        }
-        else if (action == "Left")
-        {
-            targetAction = actions.FindActionMap("Movement").FindAction("movement");//.ApplyBindingOverride(3, thisKey);
-            newPath = targetAction.bindings[3].path;
-        }
-        else if (action == "Right")
-        {
-            targetAction = actions.FindActionMap("Movement").FindAction("movement");//.ApplyBindingOverride(4, thisKey);
-            newPath = targetAction.bindings[4].path;
-        }
-        else
-        {
-            targetAction = actions.FindActionMap("Movement").FindAction(action);//.PerformInteractiveRebinding();//.WithTimeout(keybindTime).OnMatchWaitForAnother(0.2f);
+            targetAction = actions.FindActionMap("Movement").FindAction(action);
             newPath = targetAction.bindings[0].path;
         }
+        catch
+        {
+            targetAction = actions.FindActionMap("Movement").FindAction("movement");
+            newPath = targetAction.bindings[1].path;
+        }
+        savedAction = action;
+        waitingforInput = true;
+        
     }
     public void UpdateKeybinds(string action, string new_Path)
     {

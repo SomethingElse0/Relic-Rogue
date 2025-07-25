@@ -58,6 +58,11 @@ public class PlayerMovement : MonoBehaviour
         weapon.SendMessage("ChangeWeapon", weapons[0], SendMessageOptions.DontRequireReceiver);
         if (System.DateTime.Today != playerData.LastPlayed) dailyReward = true;
         else dailyReward = false;
+        if (weapon.activeInHierarchy) 
+        {
+            deck.player = gameObject;
+            deck.weapon = weapon;
+        }
         
     }
 
