@@ -5,14 +5,20 @@ using UnityEngine;
 public class EditDeck : MonoBehaviour
 {
     // Start is called before the first frame update
-    public Transform background;
-    public Transform deckEditMenu;
+    public GameObject background;
+    public GameObject deckMenu;
     public GameObject player;
+    List<string> cardsSelling = new List<string>();
     Deck deck;
     int count;
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject == player) { player.SendMessage("OnDisable", SendMessageOptions.DontRequireReceiver); }
+        if (collision.gameObject == player)
+        {
+            player.SendMessage("OnDisable", SendMessageOptions.DontRequireReceiver);
+            background.SetActive(true);
+            deckMenu.SetActive(true);
+        }
 
     }
 
@@ -33,7 +39,6 @@ public class EditDeck : MonoBehaviour
     public void PurchaceCards()
     {
         List<int> attemptedCards=new List<int>();
-        List<string> cardsSelling=new List<string>();
         int i;
         while (cardsSelling.Count < 3&&cardsSelling.Count>attemptedCards.Count) 
         {
@@ -49,5 +54,15 @@ public class EditDeck : MonoBehaviour
             attemptedCards.Add(i);
         }
     }
-
+    public string thisCard(int i)
+    {
+        PurchaceCards();
+        string selectedCard = cardsSelling[i];
+        cardsSelling.RemoveAt(i);
+        return selectedCard;
+    }
+    public void AddToDeck(string cardName)
+    {
+        deck.cardList.Add(cardName);
+    }
 }
