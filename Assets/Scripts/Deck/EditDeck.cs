@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EditDeck : MonoBehaviour
+public class BuyCards: MonoBehaviour
 {
     // Start is called before the first frame update
     public GameObject background;
@@ -34,9 +34,8 @@ public class EditDeck : MonoBehaviour
         if (deck.cardList.Capacity > 24) count += 10;
         if (count > 5) return false;
         else return true;
-
     }
-    public void PurchaceCards()
+    public void GenerateCards()
     {
         List<int> attemptedCards=new List<int>();
         int i;
@@ -53,13 +52,25 @@ public class EditDeck : MonoBehaviour
             }
             attemptedCards.Add(i);
         }
+        
     }
     public string thisCard(int i)
     {
-        PurchaceCards();
+        GenerateCards();
         string selectedCard = cardsSelling[i];
         cardsSelling.RemoveAt(i);
         return selectedCard;
+    }
+    public int setPrice(string cardName)
+    {
+        int count=1;
+        foreach (string i in deck.cardList)
+        {
+            if (i == cardName) count++;
+        }
+        int cardNumber = deck.allCards.LastIndexOf(cardName);
+        int price = 5 + 2 * (cardNumber + 3 + (count*5)) * (3*cardNumber + 1) - 2*count;
+        return price;
     }
     public void AddToDeck(string cardName)
     {

@@ -16,11 +16,12 @@ MonoBehaviour:
   weapon: {fileID: 0}
   generator: {fileID: 816726956285891398, guid: ff028c5b06412b74aabfb7573fc6b210, type: 3}
   deck: {fileID: 7922945587067234135, guid: 25ef55629537d3d488bfd82389a40f76, type: 3}
-  cardList: []
+  cardList:
+  - Coin
+  - Coin
+  - Focus
   tempCardList: []
   allCards:
-  - Alarmed
-  - Rubble
   - Coin
   - FalseCollapse
   - Focus
@@ -36,9 +37,10 @@ MonoBehaviour:
   - Alarmed
   - Rubble
   hpTemp: 0
+  damageModifier: 1
   hpRegenTemp: 0
   playerDamage: 0
-  scrapTemp: 0
+  scrapTemp: 2
   hazardProb: 0
   atkSpeedMultiplier: 0
   enemyAwareness: 0

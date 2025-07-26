@@ -5,8 +5,7 @@ public class Menu : MonoBehaviour
 {
     // Start is called before the first frame update
     
-    public Scene menu;
-    public Scene hub;
+
     float keybindTime=5;
     public Transform canvas;
     public InputActionAsset actions;
@@ -20,8 +19,6 @@ public class Menu : MonoBehaviour
     private void Awake()
     {
         Keyboard.current.onTextInput += cha => thisKey=cha.ToString();
-        menu = SceneManager.GetSceneByName("Menu");
-        hub = SceneManager.GetSceneByName("hub");
     }
     private void Update()
     {
