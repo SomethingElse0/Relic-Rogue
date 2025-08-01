@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -68,7 +69,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void OnEnable() => actions.Enable();
     private void OnDisable() => actions.Disable();
-    private void OnHit(float damage)
+    public void OnHit(float damage)
     {
         if (deck.hpTemp > damage) deck.hpTemp -= damage;
         else
@@ -99,8 +100,8 @@ public class PlayerMovement : MonoBehaviour
         }
         else
         {
-            actions.Disable();
             weaponEnabled = false;
+            OnDeath();
         }
         if (closeEnemies>0 && battle.volume < 0.7) battle.volume += 0.02f;
         else if (closeEnemies==0 && battle.volume > 0) battle.volume -= 0.01f;
@@ -152,5 +153,10 @@ public class PlayerMovement : MonoBehaviour
         weapons.Add(weapons[0]);
         weapon.SendMessage("ChangeWeapon", weapons[1], SendMessageOptions.DontRequireReceiver);
         weapons.RemoveAt(0);
+    }
+    void OnDeath()
+    {
+        actions.Disable();
+        SceneManager.LoadScene(1);
     }
 }

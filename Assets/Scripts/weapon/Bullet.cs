@@ -29,7 +29,11 @@ public class Bullet : MonoBehaviour
     }
     private void OnCollisionEnter(Collision collision)
     {
-        collision.gameObject.SendMessage("OnHit", damage + deck.damageModifier, SendMessageOptions.DontRequireReceiver);
+        try
+        {
+            collision.gameObject.SendMessage("OnHit", damage + deck.damageModifier, SendMessageOptions.DontRequireReceiver);
+        }
+        catch { }
         bounces--;
         damagePrivate--;
         if (bounces < 0) Destroy(gameObject,0.1f);

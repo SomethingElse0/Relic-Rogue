@@ -27,6 +27,7 @@ public class GenerateScrap : MonoBehaviour
     float cooldown = 0.1f;
     float lastAttempt;
     public Deck deck;
+    public GameObject level;
     void Awake()
     {
         // identifying what each object is
@@ -59,6 +60,13 @@ public class GenerateScrap : MonoBehaviour
             else isInLevel = false;
             lastAttempt = Time.fixedTime;
             
+        }
+        if (isInLevel && generateQueue.Count > 0)
+        {
+            GameObject newItem = Instantiate(generateQueue[0], transform.position, transform.rotation);
+            generateQueue.RemoveAt(0);
+            newItem.SetActive(true);
+            isInLevel = false;
         }
         
     }
@@ -178,16 +186,6 @@ public class GenerateScrap : MonoBehaviour
     public void GenerateSpecific(GameObject item)
     {
         if (item != gameObject) generateQueue.Add(item);
-        while (generateQueue.Count>0)
-        {
-            
-            if (isInLevel && colliders == 0)
-            {
-                Instantiate(generateQueue[0], transform.position, transform.rotation);
-                generateQueue.RemoveAt(0);
-                
-            }
-        }
     }
     public void GenerateSpecific(string itemName)
     {
@@ -197,15 +195,5 @@ public class GenerateScrap : MonoBehaviour
         else if (itemName == "ration") generateQueue.Add(ration);
         else if (itemName == "fuel") generateQueue.Add(fuel);
         else if (itemName == "key") generateQueue.Add(levelKey);
-        while (generateQueue.Count > 0)
-        {
-
-            if (isInLevel && colliders == 0)
-            {
-                Instantiate(generateQueue[0], transform.position, transform.rotation);
-                generateQueue.RemoveAt(0);
-
-            }
-        }
     }
 }

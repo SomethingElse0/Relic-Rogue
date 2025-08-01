@@ -11,6 +11,12 @@ public class BuyCards: MonoBehaviour
     List<string> cardsSelling = new List<string>();
     Deck deck;
     int count;
+    private void Awake()
+    {
+        deckMenu.SetActive(false);
+        background.SetActive(false);
+
+    }
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject == player)
@@ -21,8 +27,6 @@ public class BuyCards: MonoBehaviour
         }
 
     }
-
-    // Update is called once per frame
     public bool CheckCardLimit(string cardName)
     {
         deck = player.GetComponent<PlayerMovement>().deck;
@@ -39,7 +43,7 @@ public class BuyCards: MonoBehaviour
     {
         List<int> attemptedCards=new List<int>();
         int i;
-        while (cardsSelling.Count < 3&&cardsSelling.Count>attemptedCards.Count) 
+        while (cardsSelling.Count < transform.childCount&&cardsSelling.Count>attemptedCards.Count) 
         {
             i = Random.Range(0, deck.allCards.Capacity - attemptedCards.Count);
             foreach(int j in attemptedCards)
@@ -51,6 +55,10 @@ public class BuyCards: MonoBehaviour
                 cardsSelling.Add(deck.allCards[i]);
             }
             attemptedCards.Add(i);
+            foreach(Transform child in transform)
+            {
+                child.GetComponent<ManagePurchace>().card = cardsSelling[child.GetSiblingIndex()];
+            }
         }
         
     }
@@ -60,17 +68,6 @@ public class BuyCards: MonoBehaviour
         string selectedCard = cardsSelling[i];
         cardsSelling.RemoveAt(i);
         return selectedCard;
-    }
-    public int setPrice(string cardName)
-    {
-        int count=1;
-        foreach (string i in deck.cardList)
-        {
-            if (i == cardName) count++;
-        }
-        int cardNumber = deck.allCards.LastIndexOf(cardName);
-        int price = 5 + 2 * (cardNumber + 3 + (count*5)) * (3*cardNumber + 1) - 2*count;
-        return price;
     }
     public void AddToDeck(string cardName)
     {

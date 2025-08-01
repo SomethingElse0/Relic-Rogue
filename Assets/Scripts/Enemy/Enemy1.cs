@@ -58,7 +58,7 @@ public class Enemy1 : MonoBehaviour
                 if (!playerClose) player.GetComponent<PlayerMovement>().closeEnemies++;
                 playerClose = true;
             }
-            if (Vector3.Magnitude(player.transform.position - transform.position) < 10 && lineOfSight != false)
+            if (Vector3.Magnitude(player.transform.position - transform.position) < 10 && lineOfSight)
             {
                 agent.SetDestination(player.transform.position);
                 if (!playerClose)player.GetComponent<PlayerMovement>().closeEnemies++;
@@ -68,7 +68,7 @@ public class Enemy1 : MonoBehaviour
                     agent.updateRotation = false;
                     transform.LookAt(player.transform);
                     agent.updateRotation = true;
-                    if ((player.transform.position - transform.position).normalized == transform.forward && Time.fixedTime > attackCooldown + attackTime) Attack();
+                    if (Time.fixedTime > attackCooldown + attackTime) Attack();
                 }
             }
             else if (agent.remainingDistance < 1)
@@ -124,5 +124,10 @@ public class Enemy1 : MonoBehaviour
     void OnHit(float damage)
     {
         hp -= damage;
+        if (hp < 0)
+        {
+            transform.position = startPosition;
+            hp = maxHP;
+        }
     }
 }

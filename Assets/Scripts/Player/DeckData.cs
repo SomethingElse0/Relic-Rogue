@@ -20,5 +20,4 @@ public class Deck : ScriptableObject
     public int hazardProb;//probability that hazards will activate, closing off some paths, and opening paths for enemies
     public float atkSpeedMultiplier;//affects the rate at which attacs come out
     public int enemyAwareness;//probability enemies will attempt to pathfind to you when not in line of sight/not able to pathfind to you
-    
 }

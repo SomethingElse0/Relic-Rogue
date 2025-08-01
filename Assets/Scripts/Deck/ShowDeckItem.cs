@@ -9,66 +9,110 @@ public class ShowDeckItem : MonoBehaviour
     string cardName;
     List<string> spareCardList = new List<string>();
     public bool inDeck;
-    public GameObject Otherlist; 
+    public GameObject Otherlist;
+    bool onStart = true;
+    int tempCardListLength;
+    int spareCardListLength;
+    Transform card;
+    GameObject sibling(int i)
+    {
+        return transform.parent.parent.GetChild(i).gameObject;
+    }
     private void Awake()
     {
-        
-        if (inDeck == true) 
+        card = transform.parent;
+        tempCardListLength = deck.tempCardList.Count;
+        spareCardListLength = deck.cardList.Count;
+        if (inDeck)
         {
-            if (transform.parent.GetSiblingIndex() + 1 < transform.parent.parent.childCount)
+            try
             {
-                transform.parent.parent.GetChild(transform.parent.GetSiblingIndex() + 1).gameObject.SetActive(deck.cardList.Count - deck.tempCardList.Count !< transform.parent.GetSiblingIndex() + 1);
+                sibling(card.GetSiblingIndex() + 1).SetActive(tempCardListLength> card.GetSiblingIndex() + 1);
             }
-            transform.parent.gameObject.SetActive(deck.cardList.Count - deck.tempCardList.Count !< transform.parent.GetSiblingIndex());
+            catch { print(transform.parent.name); }
+            if(tempCardListLength < card.GetSiblingIndex() + 1) card.gameObject.SetActive(false);
+
         }
         else
         {
-            if (transform.parent.GetSiblingIndex() + 1 < transform.parent.parent.childCount)
+            if (card.GetSiblingIndex() + 1 < card.parent.childCount)
             {
-                transform.parent.parent.GetChild(transform.parent.GetSiblingIndex() + 1).gameObject.SetActive(deck.tempCardList.Count !< transform.parent.GetSiblingIndex()+1);
+                sibling(card.GetSiblingIndex() + 1).SetActive(spareCardListLength > card.GetSiblingIndex()+1);
             }
-            transform.parent.gameObject.SetActive(deck.tempCardList.Count !< transform.parent.GetSiblingIndex());
+            card.gameObject.SetActive(spareCardListLength > card.GetSiblingIndex());
         }
-        spareCardList.Clear();
-        spareCardList.AddRange(deck.cardList);
-        foreach (string i in deck.tempCardList)
-        {
-            spareCardList.Remove(i);
-        }
-    }
-    public void cardToggle()
-    {
-        if (inDeck == false)
-        {
-            deck.tempCardList.Add(cardName);
-            spareCardList.RemoveAt(transform.parent.GetSiblingIndex());
-            Otherlist.transform.GetChild(deck.tempCardList.Count-1).gameObject.SetActive(true);
-        }
-        else
-        {
-            spareCardList.Add(cardName);
-            deck.tempCardList.RemoveAt(transform.parent.GetSiblingIndex());
-            Otherlist.transform.GetChild(spareCardList.Count - 1).gameObject.SetActive(true);
-        }
-    }
-    void Update()
-    {
         try
         {
             if (inDeck != true)
             {
-                cardName = spareCardList[transform.parent.GetSiblingIndex()];
+                cardName = deck.cardList[card.GetSiblingIndex()].ToString();
             }
             else
             {
-                cardName = deck.tempCardList[transform.parent.GetSiblingIndex()];
+                cardName = deck.tempCardList[card.GetSiblingIndex()];
             }
             gameObject.GetComponent<Text>().text = cardName;
         }
         catch
         {
-            transform.parent.gameObject.SetActive(false);
         }
+    }
+    public void CardUpdate()
+    {
+
+    }
+    public void cardToggle()
+    {
+        if (transform.GetSiblingIndex() > 0) sibling(card.GetSiblingIndex()-1).SetActive(true);
+        if (inDeck)
+        {
+            deck.cardList.Add(cardName);
+            deck.tempCardList.RemoveAt(card.GetSiblingIndex());
+            tempCardListLength = deck.tempCardList.Count;
+            spareCardListLength = deck.cardList.Count;
+            print(tempCardListLength + " _ " + spareCardListLength);
+            Otherlist.transform.GetChild(spareCardListLength-1).gameObject.SetActive(true);
+            sibling(tempCardListLength).SetActive(false);
+        }
+        else
+        {
+            deck.tempCardList.Add(cardName);
+            deck.cardList.RemoveAt(card.GetSiblingIndex());
+            tempCardListLength=deck.tempCardList.Count;
+            spareCardListLength=deck.cardList.Count;
+            print(tempCardListLength + " _ " +spareCardListLength);
+            Otherlist.transform.GetChild(tempCardListLength- 1).gameObject.SetActive(true);
+            sibling(spareCardListLength).SetActive(false);
+        }
+        Otherlist.transform.GetChild(0).gameObject.SetActive(true);
+    }
+    void Update()
+    {
         
+        try
+        {
+            if(!sibling(card.GetSiblingIndex() - 1).activeInHierarchy)sibling(transform.GetSiblingIndex() - 1).SetActive(true);
+        }
+        catch
+        { }
+        try
+        {
+            if (inDeck != true)
+            {
+                cardName = deck.cardList[card.GetSiblingIndex()].ToString();
+            }
+            else
+            {
+                cardName = deck.tempCardList[card.GetSiblingIndex()];
+            }
+            gameObject.GetComponent<Text>().text = cardName;
+        }
+        catch
+        {
+        }
+        if (tempCardListLength != deck.tempCardList.Count)
+        {
+            tempCardListLength= deck.tempCardList.Count;
+        }
     }
 }
