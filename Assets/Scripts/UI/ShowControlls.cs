@@ -18,7 +18,6 @@ public class ShowControlls : MonoBehaviour
     {
         int i = 0;
         Transform keybind;
-        Transform text;
         string keyName;
         while (i+2 < transform.childCount)
         {

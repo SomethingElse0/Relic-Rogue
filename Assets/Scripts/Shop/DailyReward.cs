@@ -1,20 +1,32 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class DailyReward : MonoBehaviour
 {
     // Start is called before the first frame update
     public PlayerData data;
-    bool dailyRewardAvailable;
+    public bool dailyRewardAvailable;
+    public GameObject dailyReward;
+    public GameObject claimed;
+    public GameObject background;
     void Awake()
     {
-        if (data.LastPlayed.Date != System.DateTime.Now.Date) dailyRewardAvailable=true;
+        dailyRewardAvailable=(data.LastPlayed.Date != System.DateTime.Now.Date);
     }
-    void Interact()
+    void Interact(Transform player)
+    {
+        player.GetComponent<PlayerMovement>().actions.Disable();
+        if (dailyRewardAvailable) dailyReward.SetActive(true);
+        else claimed.SetActive(true);
+        background.SetActive(true);
+        dailyReward.GetComponent<Button>().interactable = true;
+    }
+    public void Reward()
     {
         data.LastPlayed = System.DateTime.Now;
-        data.keys++;
+        data.keys += 6;
         data.coins += Random.Range(12, 34);
         dailyRewardAvailable = false;
     }

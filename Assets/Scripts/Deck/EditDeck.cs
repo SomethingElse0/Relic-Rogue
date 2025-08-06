@@ -7,60 +7,123 @@ public class BuyCards: MonoBehaviour
     // Start is called before the first frame update
     public GameObject background;
     public GameObject deckMenu;
-    public GameObject player;
     List<string> cardsSelling = new List<string>();
-    Deck deck;
-    int count;
+    List<string> activeSelling = new List<string>();
+    public Deck deck;
     private void Awake()
     {
-        deckMenu.SetActive(false);
-        background.SetActive(false);
-
-    }
-    private void OnCollisionEnter(Collision collision)
-    {
-        if (collision.gameObject == player)
+        GenerateCards();
+        foreach (Transform item in deckMenu.transform)
         {
-            player.SendMessage("OnDisable", SendMessageOptions.DontRequireReceiver);
-            background.SetActive(true);
-            deckMenu.SetActive(true);
+            activeSelling.Add(item.name);
         }
-
+    }
+    void Interact(Transform player_)
+    {
+        player_.GetComponent<PlayerMovement>().actions.Disable();
+        background.SetActive(true);
+        deckMenu.SetActive(true);
+        if(name=="BuyCards")GenerateCards(1);
     }
     public bool CheckCardLimit(string cardName)
     {
-        deck = player.GetComponent<PlayerMovement>().deck;
-        count = 0;
+        int count = 0;
         foreach(string i in deck.cardList)
         {
             if (i == cardName) count++;
         }
-        if (deck.cardList.Capacity > 24) count += 10;
-        if (count > 5) return false;
-        else return true;
+        foreach (string i in deck.tempCardList)
+        {
+            if (i == cardName) count++;
+        }
+        foreach (string i in activeSelling)
+        {
+            if (i == cardName) return false;
+        }
+        foreach (string i in cardsSelling)
+        {
+            if (i == cardName) count++;
+        }
+        return (count < 5);
+
     }
     public void GenerateCards()
     {
         List<int> attemptedCards=new List<int>();
         int i;
-        while (cardsSelling.Count < transform.childCount&&cardsSelling.Count>attemptedCards.Count) 
+        foreach(Transform child in deckMenu.transform)
         {
-            i = Random.Range(0, deck.allCards.Capacity - attemptedCards.Count);
-            foreach(int j in attemptedCards)
+            ManagePurchace purchace = child.GetComponent<ManagePurchace>();
+            if (cardsSelling.Count < 8)
             {
-                if (j! > i) i++;
+                i = Random.Range(2, deck.allCards.Count - attemptedCards.Count);
+                foreach (int j in attemptedCards)
+                {
+                    if (j! > i) i++;
+                }
+                if (CheckCardLimit(deck.allCards[i])==true)
+                {
+                    cardsSelling.Add(deck.allCards[i]);
+                }
+                else attemptedCards.Add(i);
             }
-            if (CheckCardLimit(deck.allCards[i]))
+            if (child.gameObject.activeInHierarchy)
             {
-                cardsSelling.Add(deck.allCards[i]);
-            }
-            attemptedCards.Add(i);
-            foreach(Transform child in transform)
-            {
-                child.GetComponent<ManagePurchace>().card = cardsSelling[child.GetSiblingIndex()];
+                try
+                {
+
+                    if (purchace.card == "null")
+                    {
+                        if (cardsSelling.Count == 0) 
+                        {
+                            purchace.card = "Key";
+                            purchace.price = 5;
+                        }
+                        else
+                        {
+                            purchace.card = cardsSelling[child.GetSiblingIndex()];
+                            activeSelling[child.GetSiblingIndex() - 2] = cardsSelling[child.GetSiblingIndex()];
+                            purchace.setPrice(child.GetComponent<ManagePurchace>().card);
+                            cardsSelling.RemoveAt(0);
+                        }
+                    }
+
+                }
+                catch{}
             }
         }
-        
+    }
+    public void GenerateCards(int k)
+    {
+        List<int> attemptedCards = new List<int>();
+        int i;
+        foreach (Transform child in deckMenu.transform)
+        {
+            ManagePurchace purchace = child.GetComponent<ManagePurchace>();
+            if (cardsSelling.Count < 1)
+            {
+                i = Random.Range(2, deck.allCards.Count - attemptedCards.Count);
+                foreach (int j in attemptedCards)
+                {
+                    if (j! > i) i++;
+                }
+                if (CheckCardLimit(deck.allCards[i]))
+                {
+                    cardsSelling.Add(deck.allCards[i]);
+                }
+                else attemptedCards.Add(i);
+            }
+            try
+            {
+                if (purchace.card == "null")
+                {
+                    purchace.card = cardsSelling[0];
+                    purchace.setPrice(child.GetComponent<ManagePurchace>().card);
+                    cardsSelling.RemoveAt(0);
+                }
+            }
+            catch{}
+        }
     }
     public string thisCard(int i)
     {

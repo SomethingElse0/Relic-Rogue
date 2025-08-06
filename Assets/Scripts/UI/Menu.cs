@@ -29,10 +29,8 @@ public class Menu : MonoBehaviour
             
             if (Input.anyKeyDown) 
             {
-                print(newPath + thisKey);
                 newPath = newPath.Remove(newPath.LastIndexOf('/') + 1);
                 UpdateKeybinds(savedAction, newPath + thisKey);
-                print(newPath + thisKey);
             }
         }
     }
@@ -76,6 +74,10 @@ public class Menu : MonoBehaviour
         else targetAction.ApplyBindingOverride(0, new_Path);
         canvas.GetChild(1).GetComponent<ShowControlls>().UpdateControls();
         waitingforInput = false;
+    }
+    public void Quit()
+    {
+        Application.Quit();
     }
     // Update is called once per frame
 }

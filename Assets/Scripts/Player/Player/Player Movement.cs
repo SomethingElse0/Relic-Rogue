@@ -14,6 +14,7 @@ public class PlayerMovement : MonoBehaviour
     InputAction move;
     InputAction interact;
     InputAction changeWeapon;
+    InputAction pause;
     GameObject weapon;
     GameObject dashDestination;
     public Deck deck;
@@ -30,17 +31,16 @@ public class PlayerMovement : MonoBehaviour
     Vector3 dashDirection;
     Rigidbody rb;
     GameObject interactableObject;
-    int coin;
-    int fuel;
     public PlayerData playerData;
-    int scrap;
-    int rations;
-    bool levelKey=false;
+    public int scrap;
+    public int rations;
+    public bool levelKey=false;
     public float closeEnemies;
     public AudioSource battle;
+    public Transform pauseMenu;
     public bool weaponEnabled;
     
-    void Start()
+    void Awake()
     {
         dashDestination = transform.GetChild(0).gameObject;
         dash = actions.FindActionMap("Movement").FindAction("dash");
@@ -52,6 +52,8 @@ public class PlayerMovement : MonoBehaviour
         actions.FindActionMap("Movement").FindAction("attack").performed += OnAttack;
         changeWeapon = actions.FindActionMap("Movement").FindAction("change");
         actions.FindActionMap("Movement").FindAction("change").performed += ChangeWeapon;
+        pause = actions.FindActionMap("Movement").FindAction("Pause");
+        actions.FindActionMap("Movement").FindAction("Pause").performed += OnPause;
         rb = GetComponent<Rigidbody>();
         ray.origin = transform.position;
         ray.direction = dashDestination.transform.localPosition;
@@ -64,10 +66,12 @@ public class PlayerMovement : MonoBehaviour
             deck.player = gameObject;
             deck.weapon = weapon;
         }
-        
+        deck.coin = 0;
+        deck.rations = 0;
+        deck.fuel = 85;
     }
 
-    private void OnEnable() => actions.Enable();
+    public void OnEnable() => actions.Enable();
     private void OnDisable() => actions.Disable();
     public void OnHit(float damage)
     {
@@ -80,8 +84,19 @@ public class PlayerMovement : MonoBehaviour
     }
     private void OnTriggerEnter(Collider other)
     {
-        interactableObject = other.gameObject;
-        if (interactableObject.tag == "ammo") weapon.SendMessage("PickUpBullet", SendMessageOptions.DontRequireReceiver);
+        if (other.gameObject.tag == "Interactable") 
+        {
+            interactableObject = other.gameObject; 
+        }
+        else if (other.gameObject.tag == "ammo") weapon.SendMessage("PickUpBullet", SendMessageOptions.DontRequireReceiver);
+    }
+    private void OnCollisionEnter(Collision other)
+    {
+        if(other.gameObject.tag=="Interactable")
+        {
+            interactableObject = other.gameObject; 
+        }
+        if (other.gameObject.tag == "ammo") OnHit(other.gameObject.GetComponent<Bullet>().damage);
     }
     private void OnTriggerExit(Collider other)
     {
@@ -89,6 +104,7 @@ public class PlayerMovement : MonoBehaviour
     }
     void Update()
     {
+        if (deck.fuel > 100) deck.fuel = 100;
         if (weaponEnabled != weapon.activeInHierarchy) weapon.SetActive(weaponEnabled);
         if (hp > 0)
         {
@@ -105,21 +121,29 @@ public class PlayerMovement : MonoBehaviour
         }
         if (closeEnemies>0 && battle.volume < 0.7) battle.volume += 0.02f;
         else if (closeEnemies==0 && battle.volume > 0) battle.volume -= 0.01f;
+        if (hp < maxHP && deck.rations > 0)
+        {
+            hp++;
+            deck.rations--;
+        }
     }
     void OnInteract(InputAction.CallbackContext context)
     {
-        if (interactableObject!=null)interactableObject.SendMessage("Interact",SendMessageOptions.DontRequireReceiver);
+        if (interactableObject!=null)interactableObject.SendMessage("Interact", transform,SendMessageOptions.DontRequireReceiver);
     }
     void OnDash(InputAction.CallbackContext context)
     {
-        if (lastDashTime + dashCoolldown < Time.fixedTime)
+        if (deck.fuel > 0)
         {
-            lastDashTime = Time.fixedTime;
-            if (velocity.magnitude > 0) dashDirection = velocity * playerSpeed*3 / velocity.magnitude;
-            else dashDirection = savedVelocity * playerSpeed*3;
-            dashDestination.SendMessage("OnDash");
-            Vector3 correction = new Vector3(-1, 0);
-            
+            if (lastDashTime + dashCoolldown < Time.fixedTime)
+            {
+                lastDashTime = Time.fixedTime;
+                if (velocity.magnitude > 0) dashDirection = velocity * playerSpeed * 3 / velocity.magnitude;
+                else dashDirection = savedVelocity * playerSpeed * 3;
+                dashDestination.SendMessage("OnDash",SendMessageOptions.DontRequireReceiver);
+                Vector3 correction = new Vector3(-1, 0);
+                deck.fuel -= 5;
+            }
         }
     }
     void OnMove(InputAction.CallbackContext context)
@@ -130,22 +154,21 @@ public class PlayerMovement : MonoBehaviour
     {
        if(weaponEnabled) weapon.SendMessage("Attack", SendMessageOptions.DontRequireReceiver);
     }
-    void OnPause()
-    {
-        if (actions.enabled == true) OnDisable();
-        else OnEnable();
+    void OnPause(InputAction.CallbackContext context)
+    {   
+        OnDisable();
+        pauseMenu.gameObject.SetActive(true);
     }
     void Pickup(string item)
     {
-        if (item == "coin") coin++;
-        else if (item == "scrap") scrap++;
-        else if (item == "fuel") fuel++;
+        if (item == "coin") deck.coin++;
+        else if (item == "scrap") deck.scrap+=Random.Range(1,3);
+        else if (item == "fuel") deck.fuel+=Random.Range(6,15);
         else if (item == "rations") rations++;
         else if (item == "levelKey") levelKey=true;
     }
-    void OpenDoor(GameObject door)
+    public void OpenDoor()
     {
-        if (levelKey == true) door.SendMessage("hasKey", SendMessageOptions.DontRequireReceiver);
         levelKey = false;
     }
     void ChangeWeapon(InputAction.CallbackContext callbackContext)

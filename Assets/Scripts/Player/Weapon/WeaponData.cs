@@ -4,6 +4,8 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "GunData", menuName = "ScriptableObjects/GunData", order = 1)]
 public class WeaponData : ScriptableObject
 {
+    public string weaponMode;
+    public int ammo;
     public int maxAmmo;
     public float attackCooldown;
     public float reloadTime;
@@ -12,4 +14,5 @@ public class WeaponData : ScriptableObject
     public bool bulletsCollectable;
     public bool isMelee;
     public Mesh gunSprite;
+    public string bulletType;
 }

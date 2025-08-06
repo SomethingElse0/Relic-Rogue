@@ -7,7 +7,7 @@ public class Hazard : MonoBehaviour
 {
     // Start is called before the first frame update
 
-    Deck deck;
+    public Deck deck;
     float timer=60;
     int hazardsTriggered=0;
     // Update is called once per frame

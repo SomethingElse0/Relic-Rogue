@@ -21,25 +21,25 @@ public class GenerateScrap : MonoBehaviour
     int colliders; // counter for the number of objects actively collided with
     float counters; // counter for the number of objects to be created
     bool isInLevel; // is the specified position in the level?
-    float nextItemTime=60;
-    float itemTimeInterval=60;
+    float nextItemTime=10;
+    float itemTimeInterval=0;
     int itemNumberCount=0;
-    float cooldown = 0.1f;
+    float cooldown = 0.3f;
     float lastAttempt;
     public Deck deck;
     public GameObject level;
     void Awake()
     {
         // identifying what each object is
-        GameObject scrap = transform.GetChild(0).gameObject;
+        scrap = transform.GetChild(0).gameObject;
         scrap.SetActive(false);
-        GameObject coin = transform.GetChild(1).gameObject;
+        coin = transform.GetChild(1).gameObject;
         coin.SetActive(false);
-        GameObject ration = transform.GetChild(2).gameObject;
+        ration = transform.GetChild(2).gameObject;
         ration.SetActive(false);
-        GameObject fuel = transform.GetChild(3).gameObject;
+        fuel = transform.GetChild(3).gameObject;
         fuel.SetActive(false);
-        GameObject levelKey = transform.GetChild(4).gameObject;
+        levelKey = transform.GetChild(4).gameObject;
         levelKey.SetActive(false);
         deck.generator = gameObject;
 
@@ -48,25 +48,30 @@ public class GenerateScrap : MonoBehaviour
     {
         if (Time.fixedTime > itemTimeInterval)
         {
-            RandomItem(itemNumberCount, 3);
+            RandomItem(itemNumberCount, 5);
             itemTimeInterval = Time.fixedTime + nextItemTime;
             itemNumberCount++;
         }
-        if (colliders != 1&Time.fixedTime>cooldown+lastAttempt)
+        if (colliders== 1&&Time.fixedTime>cooldown+lastAttempt&&isInLevel==false)
         {
-            transform.position = new Vector3(Random.Range(-30, 30), Random.Range(-30, 30), 0);
+            transform.position =level.transform.position+ new Vector3(Random.Range(-20,20), Random.Range(-20, 20), -0.8f);
             Ray newRay = new Ray(transform.position, new Vector3(0,0,1));
-            if (Physics.Raycast(newRay, 5)) isInLevel = true;
+            if (Physics.Raycast(newRay, 5)&& colliders==0) isInLevel = true;
             else isInLevel = false;
             lastAttempt = Time.fixedTime;
             
         }
+        
         if (isInLevel && generateQueue.Count > 0)
         {
-            GameObject newItem = Instantiate(generateQueue[0], transform.position, transform.rotation);
-            generateQueue.RemoveAt(0);
-            newItem.SetActive(true);
-            isInLevel = false;
+            if (generateQueue[0] == null) generateQueue.RemoveAt(0);
+            else 
+            {
+                GameObject newItem = Instantiate(generateQueue[0], transform.position, transform.rotation);
+                generateQueue.RemoveAt(0);
+                newItem.SetActive(true);
+                isInLevel = false;
+            }
         }
         
     }
@@ -82,7 +87,7 @@ public class GenerateScrap : MonoBehaviour
     public void RandomItem(int modifier, int counter)
     {
         counters += counter;
-        int totalCount = scrapCount + coinCount + rationCount+fuelCount + modifier;
+        int totalCount = scrapCount + coinCount + rationCount+fuelCount + modifier*2;
         totalCount -= Random.Range(0, totalCount) + scrapCount;
         while (counters > 0)
         {

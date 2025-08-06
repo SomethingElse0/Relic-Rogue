@@ -29,7 +29,7 @@ public class ShowDeckItem : MonoBehaviour
             {
                 sibling(card.GetSiblingIndex() + 1).SetActive(tempCardListLength> card.GetSiblingIndex() + 1);
             }
-            catch { print(transform.parent.name); }
+            catch { }
             if(tempCardListLength < card.GetSiblingIndex() + 1) card.gameObject.SetActive(false);
 
         }
@@ -70,7 +70,6 @@ public class ShowDeckItem : MonoBehaviour
             deck.tempCardList.RemoveAt(card.GetSiblingIndex());
             tempCardListLength = deck.tempCardList.Count;
             spareCardListLength = deck.cardList.Count;
-            print(tempCardListLength + " _ " + spareCardListLength);
             Otherlist.transform.GetChild(spareCardListLength-1).gameObject.SetActive(true);
             sibling(tempCardListLength).SetActive(false);
         }
@@ -80,7 +79,6 @@ public class ShowDeckItem : MonoBehaviour
             deck.cardList.RemoveAt(card.GetSiblingIndex());
             tempCardListLength=deck.tempCardList.Count;
             spareCardListLength=deck.cardList.Count;
-            print(tempCardListLength + " _ " +spareCardListLength);
             Otherlist.transform.GetChild(tempCardListLength- 1).gameObject.SetActive(true);
             sibling(spareCardListLength).SetActive(false);
         }

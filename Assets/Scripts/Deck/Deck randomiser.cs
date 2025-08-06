@@ -5,24 +5,25 @@ using UnityEngine;
 public class DeckRandomiser : MonoBehaviour
 {
     // Start is called before the first frame update
-    public Deck OriginalDeck;
+    public Deck originalDeck;
     public Deck deck;
     Cards cards;
     List<string> list = new List<string>();
     public int numberOfCards = 0;
     public int cardTolerance=0;
-    string origin;
     private void Awake()
     {
-        deck.player = OriginalDeck.player;  
-        deck.weapon = OriginalDeck.weapon;
-        deck.generator = OriginalDeck.generator;
-        deck.deck = OriginalDeck.deck;
+        deck.player = originalDeck.player;  
+        deck.weapon = originalDeck.weapon;
+        deck.generator = originalDeck.generator;
+        deck.deck = originalDeck.deck;
+        deck.cardList = originalDeck.cardList;
+        ScrambleDeck();
     }
     public void ScrambleDeck()
     {
         list.Clear();
-        list.AddRange(deck.cardList);
+        list.AddRange(originalDeck.tempCardList);
         List<string> ScrambledList = new List<string>();
         
         int i = 0;

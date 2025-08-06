@@ -22,10 +22,6 @@ public class Enemy1 : MonoBehaviour
     bool playerClose;
 
     // Start is called before the first frame update
-    void Start()
-    {
-
-    }
     private void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
@@ -44,12 +40,16 @@ public class Enemy1 : MonoBehaviour
         if (hp > 0)
         {
             Ray newRay = new Ray(transform.position,Vector3.Normalize(player.transform.position-transform.position));
-            if (Physics.Raycast(newRay, 5)) 
+            if (Physics.Raycast(newRay, out RaycastHit hit,5)) 
             {
-                lineOfSight = false;
-                agent.speed = 1f;
-                if (playerClose) player.GetComponent<PlayerMovement>().closeEnemies--;
-                playerClose = false;
+                if (hit.transform != player.transform)
+                {
+                    lineOfSight = false;
+                    agent.speed = 1f;
+                    if (playerClose) player.GetComponent<PlayerMovement>().closeEnemies--;
+                    playerClose = false;
+                }
+                else lineOfSight = true;
             }
             else 
             { 
@@ -92,7 +92,7 @@ public class Enemy1 : MonoBehaviour
                     }
                 }
             }
-            
+            else agent.SetDestination(agent.destination);
         }
         else
         {
@@ -110,10 +110,10 @@ public class Enemy1 : MonoBehaviour
     }
     void Attack()
     {
-        GameObject newBullet = Instantiate(bullet, transform.position+(player.transform.position-transform.position).normalized, transform.rotation, transform.parent.GetChild(0));
+        GameObject newBullet = Instantiate(bullet, transform.position, transform.rotation, transform.parent.GetChild(0));
         attackTime = Time.fixedTime;
         newBullet.SetActive(true);
-        newBullet.GetComponent<Bullet>().Bounces(3, transform.position, 5);
+        newBullet.GetComponent<Bullet>().Bounces(0, 8, 5);
         if ((patrolPoints[patrolPoints.Count - 1] - transform.position).magnitude > 2)
         {
             patrolPoints.Add(transform.position);
@@ -121,11 +121,12 @@ public class Enemy1 : MonoBehaviour
             if (patrolPoints.Count > 8) patrolPoints.RemoveAt(i);
         }
     }
-    void OnHit(float damage)
+    public void OnHit(float damage)
     {
         hp -= damage;
         if (hp < 0)
         {
+            patrolPoints.Add(new Vector3(transform.position.x, transform.position.y, transform.position.z));
             transform.position = startPosition;
             hp = maxHP;
         }

@@ -15,10 +15,12 @@ public class WeaponSystem : MonoBehaviour
     GameObject dashDestination;
     float timeSinceLastReload;
     float timeOfLastAttack;
-    WeaponData GunData;
+    public WeaponData GunData;
+    Deck deck;
     private void Awake()
     {
         bullet = transform.GetChild(0).gameObject;
+        deck = transform.parent.GetComponent<PlayerMovement>().deck;
         actions = transform.parent.GetComponent<PlayerMovement>().actions;
         dashDestination = transform.parent.GetChild(transform.GetSiblingIndex() - 2).gameObject;
         bullet.SetActive(false);
@@ -36,10 +38,12 @@ public class WeaponSystem : MonoBehaviour
     {
         if (ammo > 0&&Time.time>timeSinceLastReload + GunData.reloadTime &&Time.time>timeOfLastAttack)
         {
-            GameObject newBullet = Instantiate(bullet, transform.position +0.1f*direction.normalized, transform.rotation, transform);
+            GameObject newBullet = Instantiate(bullet, transform.position +0.1f*direction.normalized, bullet.transform.rotation,transform);
             newBullet.SetActive(true);
             newBullet.transform.parent = bulletLocation;
-            newBullet.transform.GetComponent<Bullet>().Bounces(2, direction.normalized, GunData.damage);
+            newBullet.GetComponent<Bullet>().damage = GunData.damage+deck.damageModifier;
+            newBullet.GetComponent<Bullet>().deck = deck;
+            newBullet.GetComponent<Bullet>().Bounces(GunData.bulletBounces, 7, GunData.damage);
             ammo--;
             
             timeOfLastAttack = Time.time + GunData.attackCooldown;

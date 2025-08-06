@@ -1,5 +1,36 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1615251753259905674
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1528953316563513998}
+  m_Layer: 0
+  m_Name: direction
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1528953316563513998
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1615251753259905674}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 6.2500014, z: -0.0000044703484}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4563790848087349301}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &3749406360555313482
 GameObject:
   m_ObjectHideFlags: 0
@@ -101,6 +132,7 @@ MonoBehaviour:
   ammo: 10
   maxAmmo: 10
   bulletLocation: {fileID: 0}
+  GunData: {fileID: 0}
 --- !u!1 &5629685911940654610
 GameObject:
   m_ObjectHideFlags: 0
@@ -212,7 +244,7 @@ GameObject:
   - component: {fileID: 925501858642216636}
   - component: {fileID: 479937488505289253}
   m_Layer: 0
-  m_Name: Cylinder
+  m_Name: Bullet
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -227,10 +259,11 @@ Transform:
   m_GameObject: {fileID: 5678181031143292799}
   serializedVersion: 2
   m_LocalRotation: {x: 0.7071068, y: -0, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: 0.015, y: 0.349, z: 0.04}
-  m_LocalScale: {x: 0.03, y: 0.039999995, z: 0.04}
+  m_LocalPosition: {x: -0.1, y: 0.3, z: 0}
+  m_LocalScale: {x: 0.12, y: 0.16, z: 0.16}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 1528953316563513998}
   m_Father: {fileID: 4737220107482090389}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &42202533380520529
@@ -2398,7 +2431,7 @@ Rigidbody:
   m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
   m_IncludeLayers:
     serializedVersion: 2
-    m_Bits: 8
+    m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -2408,7 +2441,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 1
   m_Constraints: 56
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
 --- !u!108 &925501858642216636
 Light:
   m_ObjectHideFlags: 0
@@ -2850,14 +2883,18 @@ MonoBehaviour:
   actions: {fileID: -944628639613478452, guid: e15c15e54cdefa44abda1f09bfb33cbe, type: 3}
   deck: {fileID: 11400000, guid: d77b922d234c7a640ab684884b85e972, type: 2}
   weapons:
-  - {fileID: 11400000, guid: afc5f93438e7ffe47b23d8ce5daf97f6, type: 2}
   - {fileID: 11400000, guid: 409821f42afea1147bb9c315aea092b1, type: 2}
+  - {fileID: 11400000, guid: afc5f93438e7ffe47b23d8ce5daf97f6, type: 2}
   - {fileID: 11400000, guid: 396bd79230592db48a12b43f566ef064, type: 2}
   hp: 20
   maxHP: 20
   playerData: {fileID: 11400000, guid: 9c69a04f84a53384f80444cbe6e94960, type: 2}
+  scrap: 0
+  rations: 0
+  levelKey: 0
   closeEnemies: 0
   battle: {fileID: 1750872929149631920}
+  pauseMenu: {fileID: 0}
   weaponEnabled: 1
 --- !u!82 &2001336468792055222
 AudioSource:
