@@ -6824,7 +6824,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1685534442}
   m_HandleRect: {fileID: 1685534441}
   m_Direction: 2
-  m_Value: 0
+  m_Value: 1
   m_Size: 0.4
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -9670,7 +9670,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 600.0009}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 500}
   m_Pivot: {x: 0, y: 1}
 --- !u!1 &946472279
@@ -12364,8 +12364,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2071146626}
   m_HandleRect: {fileID: 2071146625}
   m_Direction: 2
-  m_Value: -0.0000016276042
-  m_Size: 0.3857218
+  m_Value: 1
+  m_Size: 0.4
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -13335,7 +13335,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 600}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 500}
   m_Pivot: {x: 0, y: 1}
 --- !u!1 &1432813174
@@ -15274,8 +15274,8 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 183764165}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 0.4}
+  m_AnchorMin: {x: 0, y: 0.6}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -32868,6 +32868,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 248907911}
     - target: {fileID: 3418670468315779134, guid: 39ed0dba44c6b6040a6b27398ccb622c, type: 3}
+      propertyPath: originalDeck
+      value: 
+      objectReference: {fileID: 11400000, guid: d77b922d234c7a640ab684884b85e972, type: 2}
+    - target: {fileID: 3418670468315779134, guid: 39ed0dba44c6b6040a6b27398ccb622c, type: 3}
       propertyPath: weaponEnabled
       value: 0
       objectReference: {fileID: 0}
@@ -34141,6 +34145,7 @@ MonoBehaviour:
   startLevel: {fileID: 1804718318}
   background: {fileID: 2116323062}
   noKeys: {fileID: 647722346}
+  noCoins: {fileID: 1436718469}
 --- !u!65 &2005810168
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -34219,9 +34224,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'No Keys Remaining!
+  m_text: 'No Coins Remaining!
 
-    -{Keys can be obtained from the Daily Reward}-'
+    -{Coins can be obtained from the Daily Reward
+    or playing levels}-'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -34587,8 +34593,8 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 988505154}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 0.3857218}
+  m_AnchorMin: {x: 0, y: 0.6}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}

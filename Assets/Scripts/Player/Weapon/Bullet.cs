@@ -13,43 +13,90 @@ public class Bullet : MonoBehaviour
     float damagePrivate;
     public float damage;
     Transform parent;
-    float maxSpeed = 12;
     List<RaycastHit> hitList = new List<RaycastHit>();
+    int baseSpeedMult = 3;
+    Vector3 directionFacing;
     void Awake()
     {
         rb = GetComponent<Rigidbody>();
         if(transform.parent.name=="Weapon")data = transform.parent.GetComponent<WeaponSystem>().GunData;
         if (transform.parent.CompareTag(tag)) parent = transform.parent;
+        
     }
-
+    private void Update()
+    {
+        if (rb.velocity.normalized != directionFacing) rb.velocity = rb.velocity.normalized * baseSpeedMult;
+        if (directionFacing.magnitude == 1) directionFacing = rb.velocity.normalized;
+    }
     // Update is called once per frame
+    public void Bounces(Vector3Int newInput)
+    {
+        int i = Mathf.Abs(newInput.x);
+        int speed = newInput.y;
+        int newDamage = newInput.z;
+        directionFacing = (transform.GetChild(0).position - transform.position).normalized;
+        damagePrivate = newDamage;
+        baseSpeedMult += speed;
+        rb.velocity = (directionFacing.normalized * baseSpeedMult);
+        damage = damagePrivate;
+        
+    }
     public void Bounces(int i, int speed, float newDamage)
     {
-        Vector3 directionFacing = -transform.GetChild(0).position+ transform.position;
+        directionFacing = (transform.GetChild(0).position- transform.position).normalized;
         damagePrivate = newDamage;
-        rb.AddForce(directionFacing.normalized * speed);
+        baseSpeedMult += speed;
+        rb.velocity=(directionFacing.normalized * baseSpeedMult);
         damage = damagePrivate;
     }
+
     private void OnCollisionEnter(Collision collision)
     {
         try
         {
             collision.gameObject.SendMessage("OnHit", damage + deck.damageModifier, SendMessageOptions.DontRequireReceiver);
+            if (collision.gameObject.tag != "Player" && collision.gameObject.tag != "Enemy"&&bounces>0) bounces--;
+            else Destroy(gameObject);
+            if (bounces > 0 && damagePrivate > 0)
+            {
+                bounces--;
+                damagePrivate--;
+            }
+            else Destroy(gameObject);
+        }
+        catch 
+        {
+            if (bounces > 0 && damagePrivate > 0)
+            {
+                bounces--;
+                damagePrivate--;
+            }
+            else Destroy(gameObject);
+
+        }
+        try
+        {
+            if (transform.parent.name.ToLower() != "weapon")
+            {
+                if (data.bulletType == "Explosive") Explode();
+            }
         }
         catch { }
-        if(deck!=null)if (data.bulletType == "Explosive") Explode();
-        bounces--;
+        rb.velocity += Random.Range(-0.1f, 0.1f) * collision.impulse.normalized;
+        
         damagePrivate--;
-        if (bounces < 1) Destroy(gameObject,0.1f);
-        if (damagePrivate == 0) Destroy(gameObject, 0.1f);
         damage = damagePrivate;
     }
-    private void OnTriggerEnter(Collider other)
+    /*private void OnTriggerEnter(Collider col)
     {
-        //if (collision.hasComponent(reflector)){damagePrivate+=2; rb.velocity= \reflector.direction*rb.velocity.magnitude;}
-    }
+        try{rb.velocity= col.GetComponent<Reflect>().direction*rb.velocity.magnitude;}
+        catch{}
+    }*/
     void Explode()
     {
+        baseSpeedMult = 0;
+        rb.velocity = Vector3.zero;
+        transform.GetChild(1).gameObject.SetActive(true);
         Ray newRay = new Ray(transform.position, new Vector3(0, 0, 0));
         hitList.AddRange(Physics.SphereCastAll(newRay,5));
         foreach (RaycastHit hit in hitList)
@@ -57,6 +104,6 @@ public class Bullet : MonoBehaviour
             hit.transform.SendMessage("OnHit", damage * (1 + (5 / hit.distance)), SendMessageOptions.DontRequireReceiver);
             print("BOOM");
         }
-        Destroy(gameObject);
+        Destroy(gameObject, 0.5f);
     }
 }

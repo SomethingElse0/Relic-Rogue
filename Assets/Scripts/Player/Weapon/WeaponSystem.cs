@@ -15,13 +15,15 @@ public class WeaponSystem : MonoBehaviour
     GameObject dashDestination;
     float timeSinceLastReload;
     float timeOfLastAttack;
+    PlayerMovement player;
     public WeaponData GunData;
     Deck deck;
     private void Awake()
     {
         bullet = transform.GetChild(0).gameObject;
-        deck = transform.parent.GetComponent<PlayerMovement>().deck;
-        actions = transform.parent.GetComponent<PlayerMovement>().actions;
+        player = transform.parent.GetComponent<PlayerMovement>();
+        deck = player.deck;
+        actions = player.actions;
         dashDestination = transform.parent.GetChild(transform.GetSiblingIndex() - 2).gameObject;
         bullet.SetActive(false);
     }
@@ -45,7 +47,10 @@ public class WeaponSystem : MonoBehaviour
             newBullet.GetComponent<Bullet>().deck = deck;
             newBullet.GetComponent<Bullet>().Bounces(GunData.bulletBounces, 7, GunData.damage);
             ammo--;
-            
+            int i = Random.Range(1, 3);
+            if (i == 1) player.sfx.PlayOneShot(player.attack1);
+            else if (i == 2) player.sfx.PlayOneShot(player.attack2);
+            else player.sfx.PlayOneShot(player.attack3);
             timeOfLastAttack = Time.time + GunData.attackCooldown;
         }
         if (ammo == 0) Reload();

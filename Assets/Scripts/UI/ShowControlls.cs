@@ -14,6 +14,10 @@ public class ShowControlls : MonoBehaviour
     }
 
     // Update is called once per frame
+    public void InputKeyBind(GameObject keybind)
+    {
+        keybind.GetComponentInChildren<TMPro.TextMeshProUGUI>(true).SetText(keybind.name + " : ..." );
+    }
     public void UpdateControls()
     {
         int i = 0;
@@ -22,10 +26,16 @@ public class ShowControlls : MonoBehaviour
         while (i+2 < transform.childCount)
         {
             keybind=transform.GetChild(i+1);
-            try { keyName= actions.FindActionMap("Movement").FindAction(keybind.name).bindings[0].effectivePath.ToUpper(); }
+            try {
+                keyName = InputControlPath.ToHumanReadableString(
+                  actions.FindActionMap("Movement").FindAction(keybind.name).bindings[0].effectivePath,
+                  InputControlPath.HumanReadableStringOptions.OmitDevice);
+            }
             catch
             {
-                keyName=actions.FindActionMap("Movement").FindAction("movement").bindings[i+1].effectivePath.ToUpper();
+                keyName=InputControlPath.ToHumanReadableString(
+                    actions.FindActionMap("Movement").FindAction("movement").bindings[i+1].effectivePath,
+                    InputControlPath.HumanReadableStringOptions.OmitDevice);
             }
             keyName=keyName.Substring(keyName.LastIndexOf('/') + 1);
             keybind.GetComponentInChildren<TMPro.TextMeshProUGUI>(true).SetText(keybind.name + " : "+keyName);

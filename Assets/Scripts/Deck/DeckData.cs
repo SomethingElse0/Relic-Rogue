@@ -21,7 +21,7 @@ public class Deck : ScriptableObject
     public float atkSpeedMultiplier;//affects the rate at which attacs come out
     public int enemyAwareness;//probability enemies will attempt to pathfind to you when not in line of sight/not able to pathfind to you
     public int fuel;//ammount of fuel
-    public int coin;//ammount of coin
+    public float coin;//ammount of coin
     public int scrap;//ammount of scrap
     public int rations;//ammount of rations
 }

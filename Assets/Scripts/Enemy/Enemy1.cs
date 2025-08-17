@@ -8,11 +8,12 @@ public class Enemy1 : MonoBehaviour
     NavMeshAgent agent;
     public GameObject player;
     GameObject bullet;
-    GameObject bulletHolder;
+    public GameObject bulletHolder;
+    public HPTracker tracker;
     float attackCooldown=5;
     float attackTime=10;
-    float hp=40;
-    int maxHP = 40;
+    public float hp=40;
+    public int maxHP = 40;
     bool hasAggro;
     bool lineOfSight=false;
     Vector3 startPosition;
@@ -20,6 +21,7 @@ public class Enemy1 : MonoBehaviour
     List<Vector3> patrolPoints = new List<Vector3>();
     float newPatrolPointTime;
     bool playerClose;
+    float respawnTime = -1;
 
     // Start is called before the first frame update
     private void Awake()
@@ -37,28 +39,27 @@ public class Enemy1 : MonoBehaviour
     void Update()
     {
         //basically a line of sight thing
-        if (hp > 0)
+        if (hp > 0&& Time.deltaTime>respawnTime)
         {
-            Ray newRay = new Ray(transform.position,Vector3.Normalize(player.transform.position-transform.position));
-            if (Physics.Raycast(newRay, out RaycastHit hit,5)) 
+            agent.speed = 3;
+            Ray newRay = new Ray(transform.position,player.transform.position-transform.position);
+            Physics.Raycast(newRay, out RaycastHit hit);
+            if (hit.transform != player.transform)
             {
-                if (hit.transform != player.transform)
-                {
-                    lineOfSight = false;
-                    agent.speed = 1f;
-                    if (playerClose) player.GetComponent<PlayerMovement>().closeEnemies--;
-                    playerClose = false;
-                }
-                else lineOfSight = true;
+                lineOfSight = false;
+                
+                if (playerClose) player.GetComponent<PlayerMovement>().closeEnemies--;
+                playerClose = false;
             }
-            else 
-            { 
-                lineOfSight = true; 
-                agent.speed = 7;
+            else
+            {
+                lineOfSight = true;
+                
                 if (!playerClose) player.GetComponent<PlayerMovement>().closeEnemies++;
+                patrolPoints.Add(transform.position);
                 playerClose = true;
             }
-            if (Vector3.Magnitude(player.transform.position - transform.position) < 10 && lineOfSight)
+            if (!(Vector3.Magnitude(player.transform.position - agent.destination)>1 && Vector3.Magnitude(player.transform.position - transform.position) > 10) && lineOfSight)
             {
                 agent.SetDestination(player.transform.position);
                 if (!playerClose)player.GetComponent<PlayerMovement>().closeEnemies++;
@@ -97,13 +98,12 @@ public class Enemy1 : MonoBehaviour
         else
         {
             if (playerClose) player.GetComponent<PlayerMovement>().closeEnemies--;
+            if (hp! > 0) respawnTime = Time.fixedTime + 8;
             playerClose = false;
             agent.speed = 0;
-            agent.Warp(startPosition);
-            Component pause =gameObject.AddComponent<Paused>();
-            Destroy(pause, 5);
+            agent.Warp(new Vector3(startPosition.x, startPosition.y, transform.position.z));
             hp = maxHP;
-            agent.speed = 5f;
+            agent.speed = 3f;
 
         }
         _light.intensity = 1+(2 * Mathf.Cos(Time.fixedTime));
@@ -113,7 +113,9 @@ public class Enemy1 : MonoBehaviour
         GameObject newBullet = Instantiate(bullet, transform.position, transform.rotation, transform.parent.GetChild(0));
         attackTime = Time.fixedTime;
         newBullet.SetActive(true);
-        newBullet.GetComponent<Bullet>().Bounces(0, 8, 5);
+        newBullet.transform.GetChild(0).GetComponent<Bullet>().Bounces(1, 8, 1);
+        newBullet.transform.GetChild(1).GetComponent<Bullet>().Bounces(1, 8, 1);
+        newBullet.transform.GetChild(2).GetComponent<Bullet>().Bounces(1, 8, 1);
         if ((patrolPoints[patrolPoints.Count - 1] - transform.position).magnitude > 2)
         {
             patrolPoints.Add(transform.position);

@@ -7,6 +7,10 @@ using UnityEngine.SceneManagement;
 public class PlayerMovement : MonoBehaviour
 {
     // Start is called before the first frame update
+    public AudioClip attack1;
+    public AudioClip attack2;
+    public AudioClip attack3;
+    public AudioClip hit;
     public InputActionAsset actions;
     InputAction dash;
     InputAction attack;
@@ -15,10 +19,11 @@ public class PlayerMovement : MonoBehaviour
     InputAction interact;
     InputAction changeWeapon;
     InputAction pause;
-    GameObject weapon;
+    public GameObject weapon;
     GameObject dashDestination;
     public Deck deck;
-    bool dailyReward;
+    public Deck originalDeck;
+    public bool dailyReward;
     public List<ScriptableObject> weapons = new List<ScriptableObject>();
     Ray ray;
     float playerSpeed = 5f;
@@ -32,11 +37,10 @@ public class PlayerMovement : MonoBehaviour
     Rigidbody rb;
     GameObject interactableObject;
     public PlayerData playerData;
-    public int scrap;
-    public int rations;
     public bool levelKey=false;
     public float closeEnemies;
     public AudioSource battle;
+    public AudioSource sfx;
     public Transform pauseMenu;
     public bool weaponEnabled;
     
@@ -59,28 +63,36 @@ public class PlayerMovement : MonoBehaviour
         ray.direction = dashDestination.transform.localPosition;
         weapon=transform.GetChild(transform.childCount - 1).gameObject;
         weapon.SendMessage("ChangeWeapon", weapons[0], SendMessageOptions.DontRequireReceiver);
-        if (System.DateTime.Today != playerData.LastPlayed) dailyReward = true;
-        else dailyReward = false;
+        dailyReward = System.DateTime.Today != playerData.LastPlayed;
         if (weapon.activeInHierarchy) 
         {
             deck.player = gameObject;
             deck.weapon = weapon;
         }
+        playerData.coins = originalDeck.coin + deck.coin + 0.2f * (deck.scrap + originalDeck.scrap);
+        playerData.keys += Mathf.RoundToInt(0.1f * (deck.scrap+originalDeck.scrap) - 0.5f);
         deck.coin = 0;
         deck.rations = 0;
         deck.fuel = 85;
+        deck.scrap = 0;
+        originalDeck.coin = 0;
+        originalDeck.rations = 0;
+        originalDeck.fuel = 85;
+        originalDeck.scrap = 0;
     }
 
     public void OnEnable() => actions.Enable();
     private void OnDisable() => actions.Disable();
     public void OnHit(float damage)
     {
+        
         if (deck.hpTemp > damage) deck.hpTemp -= damage;
         else
         {
             hp -= damage-deck.hpTemp;
             deck.hpTemp = 0;
         }
+        sfx.PlayOneShot(hit);
     }
     private void OnTriggerEnter(Collider other)
     {
@@ -104,6 +116,7 @@ public class PlayerMovement : MonoBehaviour
     }
     void Update()
     {
+        
         if (deck.fuel > 100) deck.fuel = 100;
         if (weaponEnabled != weapon.activeInHierarchy) weapon.SetActive(weaponEnabled);
         if (hp > 0)
@@ -117,10 +130,15 @@ public class PlayerMovement : MonoBehaviour
         else
         {
             weaponEnabled = false;
+            deck.coin = 0;
+            deck.rations = 0;
+            deck.fuel = 0;
+            deck.scrap = 0;
             OnDeath();
         }
-        if (closeEnemies>0 && battle.volume < 0.7) battle.volume += 0.02f;
-        else if (closeEnemies==0 && battle.volume > 0) battle.volume -= 0.01f;
+        if (closeEnemies > 0 && battle.volume < 0.7) battle.volume += 0.03f;
+        else if (closeEnemies == 0 && battle.volume > 0) battle.volume -= 0.001f;
+        else closeEnemies = 0;
         if (hp < maxHP && deck.rations > 0)
         {
             hp++;
@@ -152,20 +170,26 @@ public class PlayerMovement : MonoBehaviour
     }
     void OnAttack(InputAction.CallbackContext context)
     {
-       if(weaponEnabled) weapon.SendMessage("Attack", SendMessageOptions.DontRequireReceiver);
+        if (weaponEnabled) weapon.SendMessage("Attack", SendMessageOptions.DontRequireReceiver);
     }
     void OnPause(InputAction.CallbackContext context)
     {   
         OnDisable();
         pauseMenu.gameObject.SetActive(true);
     }
-    void Pickup(string item)
+    public void Pickup(string item)
     {
+        print("pickup: "+item);
         if (item == "coin") deck.coin++;
         else if (item == "scrap") deck.scrap+=Random.Range(1,3);
         else if (item == "fuel") deck.fuel+=Random.Range(6,15);
-        else if (item == "rations") rations++;
-        else if (item == "levelKey") levelKey=true;
+        else if (item == "ration") deck.rations++;
+        else if (item == "levelkey") levelKey=true;
+        else if (item == "coin(clone)") deck.coin++;
+        else if (item == "scrap(clone)") deck.scrap += Random.Range(1, 3);
+        else if (item == "fuel(clone)") deck.fuel += Random.Range(6, 15);
+        else if (item == "ration(clone)") deck.rations++;
+        else if (item == "levelkey(clone)") levelKey = true;
     }
     public void OpenDoor()
     {

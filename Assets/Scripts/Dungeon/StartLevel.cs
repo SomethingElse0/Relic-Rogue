@@ -10,6 +10,7 @@ public class StartLevel : MonoBehaviour
     public GameObject startLevel;
     public GameObject background;
     public GameObject noKeys;
+    public GameObject noCoins;
 
     private void Awake()
     {
@@ -26,7 +27,7 @@ public class StartLevel : MonoBehaviour
     public void LevelStart()
     {
         if (playerData.keys < 1) noKeys.SetActive(true);
-        else if (playerData.coins < 10) noKeys.SetActive(true);
+        else if (playerData.coins < 10) noCoins.SetActive(true);
         else 
         {
             playerData.keys--;

@@ -15,7 +15,7 @@ public class Hazard : MonoBehaviour
     {
         if (timer < Time.fixedTime)
         {
-            timer += 40;
+            timer += 20;
             OnHazard();
         }
     }
@@ -25,6 +25,7 @@ public class Hazard : MonoBehaviour
         int j = Random.Range(0, transform.childCount-hazardsTriggered);
         if (i < deck.hazardProb)
         {
+            
             try
             {
                 transform.GetChild(j).gameObject.GetComponent<NavMeshObstacle>().enabled = false;

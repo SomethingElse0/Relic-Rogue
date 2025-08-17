@@ -18,21 +18,24 @@ public class Menu : MonoBehaviour
     string newPath;
     private void Awake()
     {
-        Keyboard.current.onTextInput += cha => thisKey=cha.ToString();
+        Keyboard.current.onTextInput += cha => thisKey+=cha.ToString();
     }
     private void Update()
     {
         if (waitingforInput == true)
         {
-            
-            
-            
-            if (Input.anyKeyDown) 
+
+
+
+            if (Input.anyKeyDown)
             {
+                if (thisKey == " ") thisKey = "Space";
                 newPath = newPath.Remove(newPath.LastIndexOf('/') + 1);
                 UpdateKeybinds(savedAction, newPath + thisKey);
             }
+            else thisKey = "";
         }
+        else thisKey = "";
     }
     public void SceneChangeHub()
     {
@@ -68,11 +71,11 @@ public class Menu : MonoBehaviour
     public void UpdateKeybinds(string action, string new_Path)
     {
         if (action == "Up") targetAction.ApplyBindingOverride(1, new_Path);
-        else if (action == "Down") targetAction.ApplyBindingOverride(2, new_Path);
-        else if (action == "Left") targetAction.ApplyBindingOverride(3, new_Path);
+        else if (action == "Down") targetAction.ApplyBindingOverride(3, new_Path);
+        else if (action == "Left") targetAction.ApplyBindingOverride(2, new_Path);
         else if (action == "Right") targetAction.ApplyBindingOverride(4, new_Path);
         else targetAction.ApplyBindingOverride(0, new_Path);
-        canvas.GetChild(1).GetComponent<ShowControlls>().UpdateControls();
+        canvas.GetChild(2).GetComponent<ShowControlls>().UpdateControls();
         waitingforInput = false;
     }
     public void Quit()

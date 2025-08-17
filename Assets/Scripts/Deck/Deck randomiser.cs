@@ -9,8 +9,10 @@ public class DeckRandomiser : MonoBehaviour
     public Deck deck;
     Cards cards;
     List<string> list = new List<string>();
+    public string lastCard;
     public int numberOfCards = 0;
     public int cardTolerance=0;
+    float cooldown=10;
     private void Awake()
     {
         deck.player = originalDeck.player;  
@@ -19,6 +21,10 @@ public class DeckRandomiser : MonoBehaviour
         deck.deck = originalDeck.deck;
         deck.cardList = originalDeck.cardList;
         ScrambleDeck();
+    }
+    private void Update()
+    {
+        if (Time.deltaTime > cooldown) CardSelect();
     }
     public void ScrambleDeck()
     {
@@ -45,8 +51,8 @@ public class DeckRandomiser : MonoBehaviour
     }
     public void CardSelect()
     {
-        
-        //deck.tempCardList[0];
+        cooldown = Time.fixedTime + 20;
+        lastCard = deck.tempCardList[0].ToString();
         
         if (numberOfCards > cardTolerance)
         {
@@ -58,12 +64,13 @@ public class DeckRandomiser : MonoBehaviour
             Invoke("CardSelect", waitTime);
         }
         if (deck.tempCardList.Count < 5) AddTrapCards(2);
+        
     }
     public void CardSelect(string origin)
     {
-
+        cooldown = Time.fixedTime + 20;
         //deck.tempCardList[0];
-
+        lastCard = deck.tempCardList[0].ToString();
         if (numberOfCards > cardTolerance)
         {
             float waitTime = Time.fixedTime + 2;
@@ -74,6 +81,8 @@ public class DeckRandomiser : MonoBehaviour
             Invoke("CardSelect", waitTime);
         }
         else transform.SendMessage("Part2", SendMessageOptions.DontRequireReceiver);
+        if (deck.tempCardList.Count < 5) AddTrapCards(3);
+        
     }
     public void AddTrapCards(int i)
     {
