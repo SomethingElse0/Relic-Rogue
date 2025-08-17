@@ -12,7 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 69a61dc9c441c494ea1c7c59799e9e67, type: 3}
   m_Name: PlayerData
   m_EditorClassIdentifier: 
-  maxPlayerHP: 20
+  maxPlayerHP: 40
   basePlayerDEF: 0
   basePlayerATK: 2
   playerSpeed: 3.5
+  coins: 23
+  keys: 6
