@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class HPTracker : MonoBehaviour
 {
@@ -27,7 +28,7 @@ public class HPTracker : MonoBehaviour
     {
         
         transform.localScale = new Vector3(enemy.hp / enemy.maxHP, transform.localScale.y, transform.localScale.z);
-        if (enemy.gameObject.activeInHierarchy) transform.parent.position = enemy.transform.position + new Vector3(0,0.7f,-2);
+        if (enemy.gameObject.activeInHierarchy) transform.parent.position = new Vector3(enemy.transform.position.x, enemy.transform.position.y+0.5f, enemy.transform.position.z-0.5f);
         else transform.parent.SetParent(enemy.transform);
     }
 }

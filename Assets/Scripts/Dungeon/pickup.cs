@@ -15,7 +15,7 @@ public class pickup : MonoBehaviour
         awakeTime = Time.frameCount;
         if(name.ToLower()!="levelkey")transform.rotation=generator.transform.GetChild(0).localRotation;
         else transform.rotation = generator.transform.GetChild(4).localRotation;
-        transform.position = new Vector3(transform.position.x, transform.position.y, -0.5f);
+        transform.position = new Vector3(transform.position.x, transform.position.y, 0.3f);
     }
     private void Update()
     {

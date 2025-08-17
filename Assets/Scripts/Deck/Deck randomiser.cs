@@ -15,16 +15,13 @@ public class DeckRandomiser : MonoBehaviour
     float cooldown=10;
     private void Awake()
     {
-        deck.player = originalDeck.player;  
+        deck.player = originalDeck.player;
         deck.weapon = originalDeck.weapon;
         deck.generator = originalDeck.generator;
         deck.deck = originalDeck.deck;
         deck.cardList = originalDeck.cardList;
         ScrambleDeck();
-    }
-    private void Update()
-    {
-        if (Time.deltaTime > cooldown) CardSelect();
+        
     }
     public void ScrambleDeck()
     {
@@ -32,15 +29,14 @@ public class DeckRandomiser : MonoBehaviour
         list.AddRange(originalDeck.tempCardList);
         List<string> ScrambledList = new List<string>();
         
-        int i = 0;
-        while (i < list.Count)
+        foreach (string i in list)
         {
             int SelectedItemNo = Random.Range(0, list.Count-1);
             AddToDeck(ScrambledList, list[SelectedItemNo]);
             list.RemoveAt(SelectedItemNo);
-            i++;
         }
         deck.tempCardList=ScrambledList;
+        Invoke("CardSelect", 10);
     }
 
     // Update is called once per frame

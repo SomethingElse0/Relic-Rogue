@@ -2907,7 +2907,7 @@ MonoBehaviour:
   attack3: {fileID: 8300000, guid: 30562226abc6c6541b2eb0212b857d3a, type: 3}
   hit: {fileID: 8300000, guid: 8bfae763f15e92a4d8d4a6f2d819feb0, type: 3}
   actions: {fileID: -944628639613478452, guid: e15c15e54cdefa44abda1f09bfb33cbe, type: 3}
-  weapon: {fileID: 0}
+  weapon: {fileID: 3749406360555313482}
   deck: {fileID: 11400000, guid: d77b922d234c7a640ab684884b85e972, type: 2}
   originalDeck: {fileID: 11400000, guid: b6ebf6f2093f8f54b96923734fffddf3, type: 2}
   dailyReward: 0

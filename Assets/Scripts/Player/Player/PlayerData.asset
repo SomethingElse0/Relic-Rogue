@@ -16,5 +16,5 @@ MonoBehaviour:
   basePlayerDEF: 0
   basePlayerATK: 2
   playerSpeed: 3.5
-  coins: 23
-  keys: 6
+  coins: 0
+  keys: 0

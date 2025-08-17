@@ -7,8 +7,8 @@ public class UIupdate : MonoBehaviour
 {
     // Start is called before the first frame update
     Transform weapon;
-    public Transform player;
-    PlayerMovement playerMovement;
+    Transform player;
+    public PlayerMovement playerMovement;
     TMPro.TextMeshProUGUI hp;
     TMPro.TextMeshProUGUI ammo;
     TMPro.TextMeshProUGUI fuel;
@@ -28,13 +28,13 @@ public class UIupdate : MonoBehaviour
         rations = transform.GetChild(6).GetComponent<TMPro.TextMeshProUGUI>();
         coin = transform.GetChild(7).GetComponent<TMPro.TextMeshProUGUI>();
         lastCard = transform.GetChild(8).GetComponent<TMPro.TextMeshProUGUI>();
-        playerMovement = player.GetComponent<PlayerMovement>();
+        player = playerMovement.transform;
         weapon = playerMovement.weapon.transform;
     }
 
     void Update()
     {
-        hp.text="Health: "+playerMovement.hp+" / 20";
+        hp.text="Health: "+playerMovement.hp+" / "+playerMovement.playerData.maxPlayerHP;
         ammo.text = "Ammo: " + weapon.GetComponent<WeaponSystem>().ammo;
         fuel.text = "Fuel: " + playerMovement.deck.fuel;
         keyCard.text = "Key Card: " + playerMovement.levelKey.ToString();

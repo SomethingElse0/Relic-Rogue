@@ -69,7 +69,7 @@ public class PlayerMovement : MonoBehaviour
             deck.player = gameObject;
             deck.weapon = weapon;
         }
-        playerData.coins = originalDeck.coin + deck.coin + 0.2f * (deck.scrap + originalDeck.scrap);
+        playerData.coins += originalDeck.coin + deck.coin + 0.2f * (deck.scrap + originalDeck.scrap);
         playerData.keys += Mathf.RoundToInt(0.1f * (deck.scrap+originalDeck.scrap) - 0.5f);
         deck.coin = 0;
         deck.rations = 0;
