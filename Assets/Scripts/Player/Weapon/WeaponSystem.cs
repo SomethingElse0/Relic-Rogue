@@ -7,6 +7,7 @@ public class WeaponSystem : MonoBehaviour
 {
     // Start is called before the first frame update
     InputActionAsset actions;
+    InputAction aim;
     Vector3 direction;
     public int ammo;//I will need to go back and change this out to get ammo to replenish automatically
     public int maxAmmo;
@@ -20,18 +21,20 @@ public class WeaponSystem : MonoBehaviour
     Deck deck;
     private void Awake()
     {
+        
         bullet = transform.GetChild(0).gameObject;
         player = transform.parent.GetComponent<PlayerMovement>();
         deck = player.deck;
         actions = player.actions;
         dashDestination = transform.parent.GetChild(transform.GetSiblingIndex() - 2).gameObject;
         bullet.SetActive(false);
+        aim = actions.FindActionMap("Movement").FindAction("Aim");
     }
     void Update()
     {
         maxAmmo = GunData.maxAmmo;
-        /*if (Input.mousePresent) direction = Camera.main.ScreenToWorldPoint(Vector3.Normalize(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 0)-transform.position));
-        else*/ direction = actions.FindActionMap("Movement").FindAction("movement").ReadValue<Vector2>();
+        if (aim.ReadValue<Vector2>().magnitude>0) direction = aim.ReadValue<Vector2>();
+        else direction = actions.FindActionMap("Movement").FindAction("movement").ReadValue<Vector2>();
         transform.LookAt(direction+transform.position);
     }
 

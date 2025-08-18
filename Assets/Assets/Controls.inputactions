@@ -67,6 +67,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "Aim",
+                    "type": "Value",
+                    "id": "3d3877c8-7897-4e46-a59c-29d1098eedf2",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
                 }
             ],
             "bindings": [
@@ -171,6 +180,17 @@
                 },
                 {
                     "name": "",
+                    "id": "5950bf83-13ba-4345-8ac2-2557aaa988ec",
+                    "path": "<Gamepad>/buttonNorth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "controller",
+                    "action": "interact",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "007b062b-e9fc-40e6-b9a4-b0e1590451f5",
                     "path": "<Mouse>/leftButton",
                     "interactions": "",
@@ -186,7 +206,7 @@
                     "path": "<Gamepad>/rightTrigger",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": "controller",
                     "action": "attack",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -204,11 +224,33 @@
                 },
                 {
                     "name": "",
+                    "id": "da677d25-f819-4d59-87fb-c8aafd5ee957",
+                    "path": "<Gamepad>/buttonEast",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "controller",
+                    "action": "Pause",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "8370b537-8fed-496c-ada8-d139ada4b5a0",
                     "path": "<Mouse>/rightButton",
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard",
+                    "action": "change",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "4d145821-7949-4da4-a94d-01edebf42b73",
+                    "path": "<Gamepad>/rightShoulder",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "controller",
                     "action": "change",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -221,6 +263,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "action",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "47dab5b7-50ff-4ee1-96a3-076052d16d0e",
+                    "path": "<Gamepad>/rightStick",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "controller",
+                    "action": "Aim",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
