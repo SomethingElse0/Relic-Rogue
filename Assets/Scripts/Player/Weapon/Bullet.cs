@@ -23,13 +23,14 @@ public class Bullet : MonoBehaviour
         if (transform.parent.CompareTag(tag)) parent = transform.parent;
         
     }
+    // Update is called once per frame
     private void Update()
     {
         if (rb.velocity.normalized != directionFacing) rb.velocity = rb.velocity.normalized * baseSpeedMult;
         if (directionFacing.magnitude == 1) directionFacing = rb.velocity.normalized;
     }
-    // Update is called once per frame
-    public void Bounces(Vector3Int newInput)
+    
+    public void Bounces(Vector3Int newInput)//setting the speed etc. I used this vector3 input so I could send 3 integer inputs through send message
     {
         int i = Mathf.Abs(newInput.x);
         int speed = newInput.y;
@@ -37,9 +38,8 @@ public class Bullet : MonoBehaviour
         directionFacing = (transform.GetChild(0).position - transform.position).normalized;
         damagePrivate = newDamage;
         baseSpeedMult += speed;
-        rb.velocity = (directionFacing.normalized * baseSpeedMult);
+        rb.velocity = directionFacing.normalized * baseSpeedMult;
         damage = damagePrivate;
-        
     }
     public void Bounces(int i, int speed, float newDamage)
     {
@@ -54,7 +54,7 @@ public class Bullet : MonoBehaviour
     {
         try
         {
-            collision.gameObject.SendMessage("OnHit", damage + deck.damageModifier, SendMessageOptions.DontRequireReceiver);
+            collision.gameObject.SendMessage("OnHit", damage + deck.damageModifier, SendMessageOptions.DontRequireReceiver);//attempts to deal damage
             if (collision.gameObject.tag != "Player" && collision.gameObject.tag != "Enemy"&&bounces>0) bounces--;
             else Destroy(gameObject);
             if (bounces > 0 && damagePrivate > 0)
@@ -62,7 +62,7 @@ public class Bullet : MonoBehaviour
                 bounces--;
                 damagePrivate--;
             }
-            else Destroy(gameObject);
+            else Destroy(gameObject);//cannot bounce indefinitely
         }
         catch 
         {
@@ -91,8 +91,9 @@ public class Bullet : MonoBehaviour
     {
         try{rb.velocity= col.GetComponent<Reflect>().direction*rb.velocity.magnitude;}
         catch{}
-    }*/
-    void Explode()
+    }//THIS IS NOT YET IMPLEMENTED
+    */
+    void Explode()//this is  an AOE damage effect
     {
         baseSpeedMult = 0;
         rb.velocity = Vector3.zero;

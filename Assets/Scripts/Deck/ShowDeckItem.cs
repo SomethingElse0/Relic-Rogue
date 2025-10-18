@@ -7,45 +7,37 @@ public class ShowDeckItem : MonoBehaviour
 {
     public Deck deck;
     string cardName;
-    List<string> spareCardList = new List<string>();
     public bool inDeck;
     public GameObject Otherlist;
-    bool onStart = true;
     int tempCardListLength;
     int spareCardListLength;
     Transform card;
+    int intIfInDeck(bool b)// I'm using this to simplify the logic, so that I don't have to write the code twice.
+    {
+        if (inDeck==b) return tempCardListLength;
+        else return spareCardListLength;
+    }
     GameObject sibling(int i)
     {
         return transform.parent.parent.GetChild(i).gameObject;
     }
     private void Awake()
     {
-        card = transform.parent;
-        tempCardListLength = deck.tempCardList.Count;
-        spareCardListLength = deck.cardList.Count;
-        if (inDeck)
+        card = transform.parent;//getting variables 
+        tempCardListLength = deck.tempCardList.Count;//getting variables
+        spareCardListLength = deck.cardList.Count;//getting variables
+        try//attempts to enable the next sibling if there is another card (after the one listed by this object) 
         {
-            try
-            {
-                sibling(card.GetSiblingIndex() + 1).SetActive(tempCardListLength> card.GetSiblingIndex() + 1);
-            }
-            catch { }
-            if(tempCardListLength < card.GetSiblingIndex() + 1) card.gameObject.SetActive(false);
-
+            sibling(card.GetSiblingIndex() + 1).SetActive(intIfInDeck(inDeck)> card.GetSiblingIndex() + 1);
         }
-        else
-        {
-            if (card.GetSiblingIndex() + 1 < card.parent.childCount)
-            {
-                sibling(card.GetSiblingIndex() + 1).SetActive(spareCardListLength > card.GetSiblingIndex()+1);
-            }
-            card.gameObject.SetActive(spareCardListLength > card.GetSiblingIndex());
-        }
+        catch { }
+        card.gameObject.SetActive(intIfInDeck(inDeck) > card.GetSiblingIndex());
+        
         try
         {
-            if (inDeck != true)
+            if (!inDeck)
             {
-                cardName = deck.cardList[card.GetSiblingIndex()].ToString();
+                cardName = deck.cardList[card.GetSiblingIndex()];
             }
             else
             {
@@ -53,35 +45,27 @@ public class ShowDeckItem : MonoBehaviour
             }
             gameObject.GetComponent<Text>().text = cardName;
         }
-        catch
-        {
-        }
+        catch{}
     }
-    public void CardUpdate()
-    {
-
-    }
-    public void cardToggle()
+    public void cardToggle()//making sure the correct cards display label things are enabled
     {
         if (transform.GetSiblingIndex() > 0) sibling(card.GetSiblingIndex()-1).SetActive(true);
         if (inDeck)
         {
             deck.cardList.Add(cardName);
             deck.tempCardList.RemoveAt(card.GetSiblingIndex());
-            tempCardListLength = deck.tempCardList.Count;
-            spareCardListLength = deck.cardList.Count;
-            Otherlist.transform.GetChild(spareCardListLength-1).gameObject.SetActive(true);
             sibling(tempCardListLength).SetActive(false);
         }
         else
         {
             deck.tempCardList.Add(cardName);
             deck.cardList.RemoveAt(card.GetSiblingIndex());
-            tempCardListLength=deck.tempCardList.Count;
-            spareCardListLength=deck.cardList.Count;
-            Otherlist.transform.GetChild(tempCardListLength- 1).gameObject.SetActive(true);
+            
             sibling(spareCardListLength).SetActive(false);
         }
+        Otherlist.transform.GetChild(intIfInDeck(false) - 1).gameObject.SetActive(true);
+        tempCardListLength = deck.tempCardList.Count;
+        spareCardListLength = deck.cardList.Count;
         Otherlist.transform.GetChild(0).gameObject.SetActive(true);
     }
     void Update()
@@ -105,12 +89,11 @@ public class ShowDeckItem : MonoBehaviour
             }
             gameObject.GetComponent<Text>().text = cardName;
         }
-        catch
-        {
-        }
+        catch{}
         if (tempCardListLength != deck.tempCardList.Count)
         {
             tempCardListLength= deck.tempCardList.Count;
+
         }
     }
 }

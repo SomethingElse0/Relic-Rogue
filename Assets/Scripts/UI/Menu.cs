@@ -3,56 +3,45 @@ using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 public class Menu : MonoBehaviour
 {
-    // Start is called before the first frame update
-    
-
+    float bindingEndTime;
     float keybindTime=5;
     public Transform canvas;
     public InputActionAsset actions;
     int menuSceneCurrent;
-    int arbitraryNumber;
     string thisKey;
     string savedAction;
-    bool waitingforInput;
     InputAction targetAction;
     string newPath;
-    private void Awake()
-    {
-        Keyboard.current.onTextInput += cha => thisKey+=cha.ToString();
-    }
+    private void Awake() => Keyboard.current.onTextInput += cha => thisKey+=cha.ToString();//getting the last input
     private void Update()
     {
-        if (waitingforInput == true)
+        if (actions!=null)
         {
-
-
-
-            if (Input.anyKeyDown)
+            if (bindingEndTime < Time.fixedTime)
             {
-                if (thisKey == " ") thisKey = "Space";
-                newPath = newPath.Remove(newPath.LastIndexOf('/') + 1);
-                UpdateKeybinds(savedAction, newPath + thisKey);
+
+                if (Input.anyKeyDown)
+                {
+                    if (thisKey == " ") thisKey = "Space";//getting the last input, and translating the space key
+                    newPath = newPath.Remove(newPath.LastIndexOf('/') + 1) + thisKey;//translating into a path
+                    CompleteUpdateKeybinds(savedAction, newPath);
+                }
+                else thisKey = "";
             }
-            else thisKey = "";
+            else thisKey = "";//to prevent characters pressed before changing keybinds from being included
         }
-        else thisKey = "";
     }
-    public void SceneChangeHub()
-    {
-        SceneManager.LoadScene(1);
-    }
-    public void SceneChangeMenu()
-    {
-        SceneManager.LoadScene(0);
-    }
-    public void MenuChange(int i)
+    public void SceneChangeHub() => SceneManager.LoadScene(1);//quick functions for changing to specific scenes
+    public void SceneChangeMenu() => SceneManager.LoadScene(0);//quick functions for changing to specific scenes
+
+    public void MenuChange(int i)//changing menu scenes
     {
         canvas.GetChild(i).gameObject.SetActive(true);
         canvas.GetChild(menuSceneCurrent).gameObject.SetActive(false);
         menuSceneCurrent = i;
     }
     
-    public void UpdateKeybinds(string action)
+    public void UpdateKeybinds(string action)//this is part 1, identifying which keybinds are being updated
     {
         try 
         {
@@ -65,22 +54,18 @@ public class Menu : MonoBehaviour
             newPath = targetAction.bindings[1].path;
         }
         savedAction = action;
-        waitingforInput = true;
-        
+        bindingEndTime = Time.fixedTime + keybindTime;
     }
-    public void UpdateKeybinds(string action, string new_Path)
+    public void CompleteUpdateKeybinds(string action, string new_Path)//appplying the bindings
     {
+        //movement directions are handled seperately due to being a composite binding
         if (action == "Up") targetAction.ApplyBindingOverride(1, new_Path);
         else if (action == "Down") targetAction.ApplyBindingOverride(3, new_Path);
         else if (action == "Left") targetAction.ApplyBindingOverride(2, new_Path);
         else if (action == "Right") targetAction.ApplyBindingOverride(4, new_Path);
         else targetAction.ApplyBindingOverride(0, new_Path);
         canvas.GetChild(2).GetComponent<ShowControlls>().UpdateControls();
-        waitingforInput = false;
+        bindingEndTime = -10;
     }
-    public void Quit()
-    {
-        Application.Quit();
-    }
-    // Update is called once per frame
+    public void Quit()=> Application.Quit();//shortened for convenience, however, this isalso because I do not yet have saving between sessions working
 }

@@ -30,6 +30,7 @@ public class WeaponSystem : MonoBehaviour
         bullet.SetActive(false);
         aim = actions.FindActionMap("Movement").FindAction("Aim");
     }
+    // Update is called once per frame
     void Update()
     {
         maxAmmo = GunData.maxAmmo;
@@ -38,7 +39,7 @@ public class WeaponSystem : MonoBehaviour
         transform.LookAt(direction+transform.position);
     }
 
-    // Update is called once per frame
+    
     public void Attack()
     {
         if (ammo > 0&&Time.time>timeSinceLastReload + GunData.reloadTime &&Time.time>timeOfLastAttack)

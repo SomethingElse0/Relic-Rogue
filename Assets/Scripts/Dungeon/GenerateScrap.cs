@@ -31,7 +31,7 @@ public class GenerateScrap : MonoBehaviour
     public Deck deck;
     public GameObject level;
     public List<Vector3> positions = new List<Vector3>();
-    NavMeshAgent agent;//\\//\\//\\//\\//\\
+    NavMeshAgent agent;
     Quaternion rotation;
     Quaternion keyRotation;
     public Vector3 destination;
@@ -40,8 +40,7 @@ public class GenerateScrap : MonoBehaviour
     void Awake()
     {
         // identifying what each object is
-
-        levelScale = transform.parent.GetChild(0).GetComponent<NavMeshObstacle>().size; 
+        levelScale = transform.parent.GetChild(0).GetComponent<NavMeshObstacle>().size; //so that the items are generated around the level, and not outside/limited to only one area
         itemsHere = transform.parent.GetChild(transform.GetSiblingIndex() - 1);
         scrap = transform.GetChild(0).gameObject;
         coin = transform.GetChild(1).gameObject;
@@ -53,14 +52,14 @@ public class GenerateScrap : MonoBehaviour
         rotation = levelKey.transform.rotation;
         agent = GetComponent<NavMeshAgent>();
         agent.enabled = true;
-        positions.Add(transform.position);
+        positions.Add(transform.position);//addsthe start position as a possible item location
     }
     private void Update()
     {
         
-        if (Time.fixedTime > itemTimeInterval)
+        if (Time.fixedTime > itemTimeInterval)//regularly spawns in 3 items
         {
-            RandomItem(itemNumberCount, 7);
+            RandomItem(itemNumberCount, 3);
             itemTimeInterval = Time.fixedTime + nextItemTime;
             itemNumberCount++;
         }
@@ -69,18 +68,14 @@ public class GenerateScrap : MonoBehaviour
             bool inList = false;
             if (positions.Count > 0 && positions.Count < 20)
             {
-
-                foreach (Vector3 location in positions)
-                {
-                    if (location == new Vector3(agent.pathEndPosition.x, agent.pathEndPosition.x, -0.05f)) inList = true;
-                }
+                if (positions.Contains(new Vector3(agent.pathEndPosition.x, agent.pathEndPosition.x, -0.05f))) inList = true;
             }
             if (inList == false) positions.Add(new Vector3(transform.position.x, transform.position.y, -0.05f));
             destination = level.transform.position + new Vector3(Random.Range(-0.5f * levelScale.x, 0.5f * levelScale.x), Random.Range(-0.5f * levelScale.y, 0.5f * levelScale.y), transform.position.z);
             agent.SetDestination(destination);
             lastAttempt = Time.fixedTime;
         }
-        else if (positions.Count > 20 && agent.velocity.magnitude < 1) destination = positions[Random.Range(0,positions.Count)];
+        else if (positions.Count > 20 && (agent.transform.position-agent.pathEndPosition).magnitude<0.1f) destination = positions[Random.Range(0,positions.Count)];//selects a random destination
         if (generateQueue.Count > 0)
         {
             if (generateQueue[0] != null)
@@ -111,7 +106,7 @@ public class GenerateScrap : MonoBehaviour
         }
         
     }
-    public void RandomItem(int modifier, int counter)
+    public void RandomItem(int modifier, int counter)//picking a random item to be generated
     {
         counters += counter;
         int totalCount = scrapCount + coinCount + rationCount+fuelCount + modifier*2;
@@ -163,7 +158,7 @@ public class GenerateScrap : MonoBehaviour
         coinCount++;
         GenerateSpecific(gameObject);
     }
-    public void RandomItem(int counter)
+    public void RandomItem(int counter)//same as above, but with only an int counter for the number of items to be generated
     {
         counters += counter;
         int totalCount = coinCount + rationCount + fuelCount;
@@ -230,3 +225,5 @@ public class GenerateScrap : MonoBehaviour
         else if (itemName == "levelkey") generateQueue.Add(levelKey);
     }
 }
+
+

@@ -11,35 +11,24 @@ public class StartLevel : MonoBehaviour
     public GameObject background;
     public GameObject noKeys;
     public GameObject noCoins;
-
-    private void Awake()
-    {
-        playerData.coins += player.deck.coin * 0.25f;
-        player.deck.coin=0;
-    }
-    // Update is called once per frame
-    private void Interact()
+    private void Interact()//disables the player during the interaction, preventing various issues
     {
         player.actions.Disable();
         startLevel.SetActive(true);
         background.SetActive(true);
     }
-    public void LevelStart()
+    public void LevelStart()//this function checks whether the player can start the level
     {
         if (playerData.keys < 1) noKeys.SetActive(true);
         else if (playerData.coins < 10) noCoins.SetActive(true);
         else 
         {
-            playerData.keys--;
+            playerData.keys--;//removes the cost of a new level from what the player has
             playerData.coins -= 10;
-            player.SendMessage("OnDisable");
-            player.gameObject.SetActive(false);
             SceneManager.LoadScene(2); 
         }
         
     }
-    public void LevelStart(int i)
-    {
-        SceneManager.LoadScene(i);
-    }
+    public void LevelStart(int i)=>SceneManager.LoadScene(i);//simple scene switch
+    
 }
