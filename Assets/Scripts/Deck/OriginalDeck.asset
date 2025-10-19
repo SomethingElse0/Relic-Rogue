@@ -18,11 +18,9 @@ MonoBehaviour:
   deck: {fileID: 7922945587067234135, guid: 25ef55629537d3d488bfd82389a40f76, type: 3}
   cardList:
   - Focus
-  tempCardList:
-  - Focus
   - Coin
   - Coin
-  - Coin
+  tempCardList: []
   allCards:
   - Coin
   - FalseCollapse

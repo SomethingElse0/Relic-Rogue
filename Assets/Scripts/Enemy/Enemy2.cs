@@ -59,7 +59,7 @@ public class Enemy2 : MonoBehaviour
                 transform.position = attackEndPosition;
                 
             }
-            else transform.localPosition=Vector3.zero;
+            else transform.position=transform.parent.position;
             if (hp > 0 && Time.deltaTime > respawnTime)
             {
                 agent.speed = 3;

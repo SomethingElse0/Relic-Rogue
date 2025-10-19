@@ -9,7 +9,7 @@ public class Cards : MonoBehaviour
     float endTime = -1f;
     float hp;
     int regenLimit = -5;
-    int tempHPLimit = -5;
+    
     PlayerMovement player;
     List<string> activeCards = new List<string>();
     List<float> cardEndTime = new List<float>();
@@ -23,19 +23,6 @@ public class Cards : MonoBehaviour
         int counter = 0;
         foreach (int i in cardEndTime) { if (cardEndTime[i] >= endTime) counter = i; } 
         cardEndTime.Insert(counter, endTime);  
-    }
-    void Alarmed() 
-    {
-        target.enemyAwareness++;//increases how aggressive the enemy is - not fully implemented
-    }
-    void Rubble()
-    {
-        target.hazardProb += 2;
-    }//increases how likely a hazard is to trigger
-
-    void Coin()
-    {
-        target.generator.SendMessage("GenerateSpecific", "coin", SendMessageOptions.DontRequireReceiver);//generates a coin somewhere
     }
     void Alarmed()=>target.enemyAwareness++;//increases how aggressive the enemy is - not fully implemented
     
