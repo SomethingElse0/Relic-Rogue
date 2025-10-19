@@ -15,11 +15,11 @@ public class Hazard : MonoBehaviour
     {
         if (timer < Time.fixedTime)
         {
-            timer += 20;
+            timer = Time.fixedTime +20;
             OnHazard();
         }
     }
-    void OnHazard()
+    void OnHazard()//closes off paths for the player, and opens paths for enemies over time
     {
         int i = Random.Range(25, 50);
         int j = Random.Range(0, transform.childCount-hazardsTriggered);
@@ -28,14 +28,14 @@ public class Hazard : MonoBehaviour
             
             try
             {
-                transform.GetChild(j).gameObject.GetComponent<NavMeshObstacle>().enabled = false;
+                transform.GetChild(j).gameObject.GetComponent<NavMeshObstacle>().enabled = false;//allows the enemies another path, andd into more areas
             }
             catch
             {
-                transform.GetChild(j).gameObject.GetComponent<BoxCollider>().enabled = true;
+                transform.GetChild(j).gameObject.GetComponent<BoxCollider>().enabled = true;// restricts where the player can go
             }
             transform.GetChild(j).SetAsLastSibling();
-            hazardsTriggered++;
+            hazardsTriggered++;//to ensure it is not triggered twice
         }
         else deck.hazardProb++;
     }

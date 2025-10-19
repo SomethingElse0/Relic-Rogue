@@ -12,17 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c96690142b4d09c458dd8315bd9ae987, type: 3}
   m_Name: OriginalDeck
   m_EditorClassIdentifier: 
-  player: {fileID: 7731427128995728219, guid: 39ed0dba44c6b6040a6b27398ccb622c, type: 3}
+  player: {fileID: 0}
   weapon: {fileID: 0}
   generator: {fileID: 816726956285891398, guid: ff028c5b06412b74aabfb7573fc6b210, type: 3}
   deck: {fileID: 7922945587067234135, guid: 25ef55629537d3d488bfd82389a40f76, type: 3}
-  cardList: []
+  cardList:
+  - Focus
   tempCardList:
+  - Focus
   - Coin
   - Coin
-  - Focus
-  - FullAuto
-  - Focus
   - Coin
   allCards:
   - Coin
@@ -47,3 +46,7 @@ MonoBehaviour:
   hazardProb: 0
   atkSpeedMultiplier: 0
   enemyAwareness: 0
+  fuel: 85
+  coin: 0
+  scrap: 0
+  rations: 0

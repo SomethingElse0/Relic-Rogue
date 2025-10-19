@@ -15,9 +15,10 @@ public class Doors : MonoBehaviour
         if (player.GetComponent<PlayerMovement>().levelKey)
         {
             player.SendMessage("OpenDoor");
-            if (_object != null) _object.SetActive(true);
+            try { _object.SetActive(true); }
+            catch { SceneManager.LoadScene(1); }
             deactivate.SetActive(false);
-            if (toHub == true) SceneManager.LoadScene(1);
+             //seperate option for going back to the hub
         }
         
     }

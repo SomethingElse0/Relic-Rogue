@@ -6,29 +6,45 @@ using UnityEngine.AI;
 public class HPTracker : MonoBehaviour
 {
     // Start is called before the first frame update
-    Enemy1 enemy;
+    public Enemy1 enemy1;
+    Enemy2 enemy2;
+    int enemyType;
     public Transform newLocation;
     void Awake()
     {
-        try {
-            if (enemy.transform.name != newLocation.name) 
-            { 
-                enemy = transform.parent.parent.GetComponent<Enemy1>(); 
-            }
+        try
+        {
+                
+            enemy1 = transform.parent.parent.GetComponent<Enemy1>();
+            enemy1.hp = enemy1.maxHP;
+            enemyType = 1;
         }
-        catch { enemy = transform.parent.parent.GetComponent<Enemy1>(); }
-        enemy.tracker = transform.GetComponent<HPTracker>();
-        transform.parent.SetParent(newLocation);
-        enemy.hp = enemy.maxHP;
+        catch 
+        { 
+            enemy2 = transform.parent.parent.GetChild(0).GetComponent<Enemy2>();
+            enemyType = 2;
+            enemy2.hp = enemy2.maxHP;
+        }
+        transform.parent.SetParent(newLocation);        
         transform.rotation = newLocation.rotation;
     }
 
     // Update is called once per framee
     void Update()
     {
-        
-        transform.localScale = new Vector3(enemy.hp / enemy.maxHP, transform.localScale.y, transform.localScale.z);
-        if (enemy.gameObject.activeInHierarchy) transform.parent.position = new Vector3(enemy.transform.position.x, enemy.transform.position.y+0.5f, enemy.transform.position.z-0.5f);
-        else transform.parent.SetParent(enemy.transform);
+        if (enemyType == 1)
+        {
+            Enemy1 enemy = enemy1;
+            transform.localScale = new Vector3(enemy.hp / enemy.maxHP, transform.localScale.y, transform.localScale.z);
+            if (enemy.gameObject.activeInHierarchy) transform.parent.position = new Vector3(enemy.transform.position.x, enemy.transform.position.y + 0.5f, enemy.transform.position.z - 0.5f);
+            else transform.parent.SetParent(enemy.transform);
+        }
+        else if (enemyType == 2)
+        {
+            Enemy2 enemy = enemy2;
+            transform.localScale = new Vector3(enemy.hp / enemy.maxHP, transform.localScale.y, transform.localScale.z);
+            if (enemy.gameObject.activeInHierarchy) transform.parent.position = new Vector3(enemy.transform.position.x, enemy.transform.position.y + 0.5f, enemy.transform.position.z - 0.5f);
+            else transform.parent.SetParent(enemy.transform);
+        }
     }
 }

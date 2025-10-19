@@ -6,18 +6,36 @@ public class Cards : MonoBehaviour
 {
     // Start is called before the first frame update
     public Deck target;
-    float endTime=-1f;
-    void Alarmed()
+    float endTime = -1f;
+    float hp;
+    int regenLimit = -5;
+    int tempHPLimit = -5;
+    PlayerMovement player;
+    List<string> activeCards = new List<string>();
+    List<float> cardEndTime = new List<float>();
+    private void Awake()
     {
-        target.enemyAwareness++;
+        hp = target.player.GetComponent<PlayerMovement>().hp;
+        player = target.player.GetComponent<PlayerMovement>();
+    }
+    void SetTimeLimit(string functionName, float endTime)
+    {
+        int counter = 0;
+        foreach (int i in cardEndTime) { if (cardEndTime[i] >= endTime) counter = i; } 
+        cardEndTime.Insert(counter, endTime);  
+    }
+    void Alarmed() 
+    {
+        target.enemyAwareness++;//increases how aggressive the enemy is - not fully implemented
     }
     void Rubble()
     {
         target.hazardProb += 2;
-    }
+    }//increases how likely a hazard is to trigger
+
     void Coin()
     {
-        target.generator.SendMessage("GenerateSpecific", "coin", SendMessageOptions.DontRequireReceiver);
+        target.generator.SendMessage("GenerateSpecific", "coin", SendMessageOptions.DontRequireReceiver);//generates a coin somewhere
     }
     void FalseCollapse()
     {
@@ -25,63 +43,93 @@ public class Cards : MonoBehaviour
         target.hazardProb += 3;
         target.deck.GetComponent<DeckRandomiser>().numberOfCards += 2;
         target.deck.GetComponent<DeckRandomiser>().CardSelect();
+        SetTimeLimit("Part2",Time.fixedTime+10);
+        //temporarily increases the probability of a hazard and plays the next two cards sooner
     }
     void Part2()
     {
-        target.hazardProb = -Mathf.Abs(target.hazardProb);
+        target.hazardProb = -Mathf.Abs(target.hazardProb);//false collapse part 2: increases the stability.
     }
     void Focus()
     {
         target.atkSpeedMultiplier = target.atkSpeedMultiplier * 0.9f;
-        target.playerDamage += 3;
-        Destroy(this);
-    }
-    void FullAuto()
+        target.playerDamage ++;
+        SetTimeLimit("FocusEnd", 20 + Time.fixedTime);
+    }//increases the ammount of damage, and the attack rate
+    void FocusEnd()
     {
-        target.atkSpeedMultiplier += 3;
+        target.atkSpeedMultiplier = target.atkSpeedMultiplier / 0.9f;
+        target.playerDamage--;
     }
+    void FullAuto() 
+    { 
+        target.atkSpeedMultiplier += 3;
+        SetTimeLimit("FullAutoEnd", 16 + Time.fixedTime);
+    }//increases the player attack speed
+    void FullAutoEnd()
+    {
+        target.atkSpeedMultiplier -= 3;
+    }//increases the player attack speed
+
     void FullerAuto()
     {
-        target.atkSpeedMultiplier += 5;
+        target.atkSpeedMultiplier += 5;//increases the player attack speed
     }
-    void IntoTheDepths()
+    void FullerAutoEnd()
+    {
+        target.atkSpeedMultiplier -= 5;//increases the player attack speed
+    }
+    void IntoTheDepths()//generates a key, but removes the next card in the deck
     {
         target.generator.GetComponent<GenerateScrap>().GenerateSpecific("key");
         target.tempCardList.RemoveAt(1);
         Rubble();
     }
-    void Resourceful()
+    void Resourceful()//adds two coppies of the next card to the deck, unless it is another "resourceful" 
     {
-        if (target.tempCardList[0] == "Resouceful") GetComponent<DeckRandomiser>().AddToDeck(target.tempCardList, target.tempCardList[1]);
-        GetComponent<DeckRandomiser>().AddToDeck(target.tempCardList, target.tempCardList[0]);
+        if (target.tempCardList[1] != "Resouceful") GetComponent<DeckRandomiser>().AddToDeck(target.tempCardList, target.tempCardList[1]);
+        GetComponent<DeckRandomiser>().AddToDeck(target.tempCardList, target.tempCardList[1]);
     }
-    void hpRegenTemp()
+    void hpRegenTemp()//regenertes  hp
     {
         target.hpRegenTemp += 5;
-        endTime = Time.fixedTime + 30f;
+        regenLimit += 5;
+        SetTimeLimit("hpRegenTempEnd", Time.fixedTime + 20f);
     }
+    
     void Update()
     {
-        if (Time.fixedTime > endTime && endTime > 0)
+        if (Time.fixedTime < cardEndTime[0])
         {
-            target.hpRegenTemp -= 5;
-            if (target.hpRegenTemp > 0) target.hpRegenTemp = 0;
-            endTime = -1;
+            SendMessage(activeCards[0]);
+        }
+        if (Time.fixedTime > endTime && endTime > 0&&hp<player.playerData.maxPlayerHP)
+        {
+            hp++;
+            target.hpRegenTemp--;
+            if (target.hpRegenTemp > 0) endTime += 5;
+            else endTime = -1;
+        }
+        if (target.hpRegenTemp == regenLimit)
+        {
+            int i = activeCards.IndexOf("hpRegenTempEnd");
+            regenLimit -= 5;
+            activeCards.RemoveAt(i);
+            cardEndTime.RemoveAt(i);
         }
     }
-    void Scrapped()
+    void Scrapped()//generates an item, and increases the probability of scrap
     {
         target.scrapTemp += 3;
         target.generator.SendMessage("GenerateScrap", SendMessageOptions.DontRequireReceiver);
 
     }
-    void Protection()
-    {
-        target.hpTemp += 5;
-    }
-    void SecondChance()
+    void Protection()=>target.hpTemp += 5;//gives 5 temp hp
+    void ProtectionEnd() => target.hpTemp -= Mathf.Repeat(target.hpTemp, 5);
+
+    void SecondChance()//gives a lot of bonus hp, but increases enemy awareness
     {
         target.hpTemp += 30;
-        target.enemyAwareness += 3;
+        target.enemyAwareness += 5;
     }
 }

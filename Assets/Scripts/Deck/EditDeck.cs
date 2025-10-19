@@ -20,12 +20,12 @@ public class BuyCards: MonoBehaviour
     }
     void Interact(Transform player_)
     {
-        player_.GetComponent<PlayerMovement>().actions.Disable();
+        player_.GetComponent<PlayerMovement>().actions.Disable();//prevents the playerfrom moving during the interaction
         background.SetActive(true);
         deckMenu.SetActive(true);
         if(name=="BuyCards")GenerateCards(1);
     }
-    public bool CheckCardLimit(string cardName)
+    public bool CheckCardLimit(string cardName)//checks if the plyer can purchace another of the same card
     {
         int count = 0;
         foreach(string i in deck.cardList)
@@ -47,7 +47,7 @@ public class BuyCards: MonoBehaviour
         return (count < 5);
 
     }
-    public void GenerateCards()
+    public void GenerateCards()///attempts to select six cards to sell
     {
         List<int> attemptedCards=new List<int>();
         int i;
@@ -93,7 +93,7 @@ public class BuyCards: MonoBehaviour
             }
         }
     }
-    public void GenerateCards(int k)
+    public void GenerateCards(int k)//generates k ammount of cards
     {
         List<int> attemptedCards = new List<int>();
         int i;
@@ -132,7 +132,7 @@ public class BuyCards: MonoBehaviour
         cardsSelling.RemoveAt(i);
         return selectedCard;
     }
-    public void AddToDeck(string cardName)
+    public void AddToDeck(string cardName)//adds a card to the deck
     {
         deck.cardList.Add(cardName);
     }

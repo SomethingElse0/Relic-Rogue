@@ -24,11 +24,11 @@ public class backgroundScroll : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //this is to have an infinite scroll. However, one line in the grid background is unfortunately slightly offset
         offsetNow = transform.position - startPos;
         if (Mathf.Abs(offsetNow.x) > offset.x) correction = new Vector3(offset.x, 0) * (direction.x / Mathf.Abs(direction.x));
         else if (Mathf.Abs(offsetNow.y) > offset.y) correction = new Vector3(0, offset.y) * (direction.y / Mathf.Abs(direction.y));
         else correction = new Vector3(0, 0);
         transform.position = transform.position-correction + direction * Time.deltaTime;
-        transform.position = new Vector3(transform.position.x, transform.position.y, 8*Mathf.Sin(Time.fixedTime + 45 * backgroundNo));
     }
 }

@@ -9,6 +9,7 @@ public class UIupdate : MonoBehaviour
     Transform weapon;
     Transform player;
     public PlayerMovement playerMovement;
+    public DeckRandomiser deck;
     TMPro.TextMeshProUGUI hp;
     TMPro.TextMeshProUGUI ammo;
     TMPro.TextMeshProUGUI fuel;
@@ -41,6 +42,6 @@ public class UIupdate : MonoBehaviour
         scrap.text = "Scrap: " + playerMovement.deck.scrap;
         coin.text = "Coins: " + playerMovement.deck.coin;
         rations.text = "Rations: " + playerMovement.deck.rations;
-        lastCard.text = "Last Card: " + playerMovement.deck.deck.GetComponent<DeckRandomiser>().lastCard;
+        lastCard.text = "Last Card: " + deck.lastCard;
     }
 }
