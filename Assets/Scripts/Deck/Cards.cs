@@ -37,6 +37,12 @@ public class Cards : MonoBehaviour
     {
         target.generator.SendMessage("GenerateSpecific", "coin", SendMessageOptions.DontRequireReceiver);//generates a coin somewhere
     }
+    void Alarmed()=>target.enemyAwareness++;//increases how aggressive the enemy is - not fully implemented
+    
+    void Rubble()=>target.hazardProb += 2;//increases how likely a hazard is to trigger
+    
+    void Coin()=>target.generator.SendMessage("GenerateSpecific", "coin", SendMessageOptions.DontRequireReceiver);//generates a coin somewhere
+    
     void FalseCollapse()
     {
         target.hazardProb = Mathf.Abs(target.hazardProb);
