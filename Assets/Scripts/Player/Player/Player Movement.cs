@@ -81,8 +81,8 @@ public class PlayerMovement : MonoBehaviour
         //dealing with coins gained etc. after the run is over
         else
         {
-            playerData.coins += originalDeck.coin + deck.coin + 0.2f * (deck.scrap + originalDeck.scrap);
-            playerData.keys += Mathf.RoundToInt(0.1f * (deck.scrap + originalDeck.scrap) - 0.5f);
+            playerData.coins += originalDeck.coin + deck.coin + 0.3f * (deck.scrap + originalDeck.scrap);
+            playerData.keys += Mathf.RoundToInt(0.03f * (deck.scrap + originalDeck.scrap) - 0.5f);
         }
         //reset values
         deck.coin = 0;
